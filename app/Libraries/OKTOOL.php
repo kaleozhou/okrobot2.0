@@ -8,11 +8,13 @@ use App\Models\Set;
 use App\Models\Trend;
 use App\Models\Kline;
 use App\Models\Borrow;
+use Illuminate\Http\Request;
 use DB;
 class OKTOOL{
     public $api_key;
     public $secret_key;
     public $client;
+    public $request;
     /**
      * @access 
      * @author kaleo <kaleo1990@hotmail.com>
@@ -21,14 +23,16 @@ class OKTOOL{
      * @param $client OKCoin类
      * @return
      */
-    public function __construct($api_key,$secret_key,$client)
+    public function __construct($api_key,$secret_key,$client,$request)
     {
         $this->api_key=$api_key;
         $this->secret_key=$secret_key;
         $this->client=$client;
+        $this->request=$request;
     }
     public function api_to_database($tablename){
         //用户信息
+        $res=false;
         switch ($tablename) {
         case 'userinfo':
             //获取用户信息
@@ -37,6 +41,7 @@ class OKTOOL{
             //todatabase
             if ($result->result) {
                 $userinfo=new Userinfo();
+                $userinfo->user_id=$this->request->user()->id;
                 $userinfo->asset_net=$result->info->funds->asset->net;
                 $userinfo->asset_total=$result->info->funds->asset->total;
                 $userinfo->borrow_btc=$result->info->funds->borrow->btc;
@@ -48,94 +53,73 @@ class OKTOOL{
                 $userinfo->freezed_btc=$result->info->funds->freezed->btc;
                 $userinfo->freezed_cny=$result->info->funds->freezed->cny;
                 $userinfo->freezed_ltc=$result->info->funds->freezed->ltc;
-                $userinfo->union_fund=date("Y/m/d H:i:s");
+                $userinfo->union_fund='';
                 $res=$userinfo->save();
             }
             else
             {
                 var_dump($result->error_code);
             }
-            return 'jieguo:';
+            return $res;
             break;
         case 'ticker':
             //获取OKCoin行情（盘口数据）
             $params = array('symbol' => 'btc_cny');
-            $result = $client -> tickerApi($params);
+            $result = $this->client-> tickerApi($params);
             //todatabase
-            $ticker=array();
-            $ticker['buy']=$result->ticker->buy;
-            $ticker['high']=$result->ticker->high;
-            $ticker['last_price']=$result->ticker->last;
-            $ticker['low']=$result->ticker->low;
-            $ticker['sell']=$result->ticker->sell;
-            $ticker['vol']=$result->ticker->vol;
+            $ticker=new Ticker();
+            $ticker->buy=$result->ticker->buy;
+            $ticker->high=$result->ticker->high;
+            $ticker->last_price=$result->ticker->last;
+            $ticker->low=$result->ticker->low;
+            $ticker->sell=$result->ticker->sell;
+            $ticker->vol=$result->ticker->vol;
             //计算偏移率
             $newset=get_new_info('set');
-            $last_price=$ticker['last_price'];
-            $my_last_price=$newset['my_last_price'];
+            $last_price=$ticker->last_price;
+            $my_last_price=$newset->my_last_price;
             $dif_price=$last_price-$my_last_price;
-            $ticker['dif_price']=$dif_price;
+            $ticker->dif_price=$dif_price;
             if($my_last_price!=0){
                 $base_rate=$dif_price/$my_last_price;
             }
-            $ticker['base_rate']=$base_rate;
-            $ticker['tickerdate']=date("Y/m/d H:i:s");
-            $res=$ticker_db->insert($ticker,true);
+            $ticker->base_rate=$base_rate;
+            $ticker->tickerdate=date("Y/m/d H:i:s");
+            $res=$ticker->save();
             break;
         case 'orderinfo':
             //批量获取用户订单
             $params = array('api_key' => $this->api_key, 'symbol' => 'btc_cny', 'status' => 1, 'current_page' => '1', 'page_length' => '15');
-            $result = $client -> orderHistoryApi($params);
-            $orderinfo=array();
+            $result = $this->client-> orderHistoryApi($params);
             $orders=array();
             $ordersresult=$result->orders;
-            $i=0;
             foreach ($ordersresult as $key) {
                 //取出api结果
-                $orderinfo['amount']=$key->amount;  
-                $orderinfo['deal_amount']=$key->deal_amount;  
-                $orderinfo['avg_price']=$key->avg_price;
-                //由于获取的是java时间戳，去掉后三位  
-                $orderinfo['create_date']=date("Y/m/d H:i:s",substr($key->create_date,0,strlen($key->create_date)-3));  
-                $orderinfo['order_id']=$key->order_id;  
-                $orderinfo['price']=$key->price;  
-                $orderinfo['status']=$key->status;  
-                $orderinfo['symbol']=$key->symbol;  
-                $orderinfo['ordertype']=$key->type;  
-                $orders[$i]=$orderinfo;
-                $i++;
+                $orderinfo=Orderinfo::firstOrCreate('order_id',$key->order_id);
+                $orderinfo->user_id=$request->user()->id;
+                $orderinfo->amount=$key->amount;  
+                $orderinfo->deal_amount=$key->deal_amount;  
+                $orderinfo->avg_price=$key->avg_price;
+                $orderinfo->create_date=date("Y/m/d H:i:s",substr($key->create_date,0,strlen($key->create_date)-3));  
+                $orderinfo->order_id=$key->order_id;  
+                $orderinfo->price=$key->price;  
+                $orderinfo->status=$key->status;  
+                $orderinfo->symbol=$key->symbol;  
+                $orderinfo->ordertype=$key->type;  
+                $orderinfo->save();
             }
-            //将订单插入数据库
-            if(count($orders)>0){
-                foreach ($orders as $key) {
-                    // 验证数据库是否存在存在
-                    $where=array('order_id'=>$key['order_id']);
-                    $rs=$orderinfo_db->select($where);
-                    if (empty($rs)) {
-                        // 如果空插入数据
-                        $orderinfo_db->insert($key,true);
-                    }
-                    else {
-                        //更新数据
-                        $orderinfo_db->update($key,$where);
-                    }
-                }
-            }else {
-                $data=array('status'=>'-1');
-                $orderinfo_db->update($data,true);
+            if (count($ordersresult)<1) {
+                Orderinfo::where('status',1)->update(['status'=>-1]);
             }
-            //返回上次更新的完全成交的订单信息
             break;
         case 'kline':
             //获取比特币5分钟k线图数据20条
-            $type=KLINETYPE;
+            $type=config('okcoin.klinetype');
             $params = array('symbol' => 'btc_cny', 'type' =>$type, 'size' => 20);
-            $result = $client -> klineDataApi($params);
-            $klines=array();
-            $kline=array();
-            $i=0;
+            $result = $this->client->klineDataApi($params);
             foreach ($result as $reskline) {
                 //取出每个kline
+                $kline=Kline::firstOrCreate('create_date',$reskline->create_date);
                 $kline['create_date']=date("Y/m/d H:i:s",substr($reskline[0],0,strlen($reskline[0])-3));  
                 $kline['start_price']=$reskline[1];
                 $kline['high_price']=$reskline[2];
@@ -143,21 +127,7 @@ class OKTOOL{
                 $kline['over_price']=$reskline[4];
                 $kline['vol']=$reskline[5];
                 $kline['dif_price']=$kline['high_price']-$kline['low_price'];
-                $klines[$i]=$kline;
-                $i++;
-            }
-            if (count($klines)>0) {
-                foreach ($klines as $key) {
-                    //如果时间戳相等，不插入否则插入
-                    $where=array('create_date'=>$key['create_date']);
-                    $rs=$kline_db->select($where);
-                    if(empty($rs))
-                    {
-                        //插入数据库
-                        $res=$kline_db->insert($key,true);
-                        //计算除平均值添加近基准价格中
-                    }
-                }
+                $kline->save();
             }
             break;
         case 'set':
@@ -179,7 +149,7 @@ class OKTOOL{
         case 'borrow':
             //api
             $params = array('api_key' => $this->api_key, 'symbol' => 'btc_cny');
-            $result = $client -> borrowsInfoApi($params);
+            $result = $this->client-> borrowsInfoApi($params);
             //todatabase
             $borrow=array();
             $borrow['borrow_btc']=$result->borrow_btc;
@@ -301,7 +271,7 @@ class OKTOOL{
             $trend_db=pc_base::load_model('okrobot_trend_model');
             $kline_db=pc_base::load_model('okrobot_kline_model');
             //创建OKCoinapt客户端
-            $client = new OKCoin(new OKCoin_ApiKeyAuthentication($this->api_key, $this->secret_key));
+            $this->client= new OKCoin(new OKCoin_ApiKeyAuthentication($this->api_key, $this->secret_key));
             //获取当前行情和基最新成交价价
             $newticker=get_new_info('ticker');
             $last_price=$newticker['last_price'];
@@ -356,7 +326,7 @@ class OKTOOL{
                             $symbol='btc_cny';
                             $tradetype='sell_market';
                             $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'amount' => $amount);
-                            $result = $client->tradeApi($params);
+                            $result = $this->client>tradeApi($params);
                             //插入数据库
                             $trade['amount']=$amount;
                             $trade['symbol']=$symbol;
@@ -379,7 +349,7 @@ class OKTOOL{
                             $symbol='btc_cny';
                             $tradetype='buy_market';
                             $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'price' => $price);
-                            $result = $client -> tradeApi($params);
+                            $result = $this->client-> tradeApi($params);
                             //插入数据库
                             $trade['price']=$price;
                             $trade['symbol']=$symbol;
@@ -419,7 +389,7 @@ class OKTOOL{
                             $symbol='btc_cny';
                             $tradetype='buy_market';
                             $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'price' => $price);
-                            $result = $client -> tradeApi($params);
+                            $result = $this->client-> tradeApi($params);
                             //插入数据库
                             $trade['price']=$price;
                             $trade['symbol']=$symbol;
@@ -445,7 +415,7 @@ class OKTOOL{
                             $symbol='btc_cny';
                             $tradetype='sell_market';
                             $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'amount' => $amount);
-                            $result = $client->tradeApi($params);
+                            $result = $this->client>tradeApi($params);
                             //插入数据库
                             $trade['amount']=$amount;
                             $trade['symbol']=$symbol;
@@ -471,7 +441,7 @@ class OKTOOL{
                     $symbol='btc_cny';
                     $tradetype='sell_market';
                     $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'amount' => $amount);
-                    $result = $client->tradeApi($params);
+                    $result = $this->client>tradeApi($params);
                     //插入数据库
                     $trade['amount']=$amount;
                     $trade['symbol']=$symbol;

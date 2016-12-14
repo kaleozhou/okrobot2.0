@@ -24,18 +24,15 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //读取配置文件的key
         $api_key=config('okcoin.api_key');
         $secret_key=config('okcoin.secret_key');
         $client =new OKCoin(new ApikeyAuthentication($api_key,$secret_key));
-        $OKTOOL=new OKTOOL($api_key,$secret_key,$client);
+        $OKTOOL=new OKTOOL($api_key,$secret_key,$client,$request);
         $res=$OKTOOL->api_to_database('userinfo');
         var_dump($res);
-        $users=Userinfo::all();
-        $local=config('okcoin.unit');
-        printf($local);
         //return view('home',['users'=>$users,'phone'=>SMSPHONE]);
     }
 }

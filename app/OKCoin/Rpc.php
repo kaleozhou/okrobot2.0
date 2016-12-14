@@ -46,10 +46,8 @@ class Rpc {
                     next($params);
                 }
                 $sign = $sign . "secret_key=" . $auth ->apiKey->_apiKeySecret;
-                var_dump($sign);
                 $sign = strtoupper(md5($sign));
                 $params['sign'] = $sign;
-                var_dump($sign);
                 break;
             default :
                 break;
