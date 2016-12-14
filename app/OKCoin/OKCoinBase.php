@@ -35,7 +35,6 @@ class OKCoinBase {
 //			} else if ($authentication !== null && is_string($authentication)) {
 			} else if (true) {
 				$apiKey = $authentication;
-                var_dump($apiKeySecret);
 				if ($apiKeySecret === null) {
 					// Simple API key
 					$this -> _authentication = new ApiKeyAuthentication($apiKey, $apiKeySecret);

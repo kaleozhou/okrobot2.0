@@ -1,6 +1,6 @@
 <?php
 namespace App\OKCoin;
-class OKCoin_Exception extends Exception
+class OKCoin_Exception
 {
     public function __construct($message, $http_code=null, $response=null)
     {
