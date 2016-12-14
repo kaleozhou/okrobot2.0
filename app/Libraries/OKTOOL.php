@@ -68,6 +68,7 @@ class OKTOOL{
             $result = $this->client-> tickerApi($params);
             //todatabase
             $ticker=new Ticker();
+            $ticker->user_id=$this->request->user()->id;
             $ticker->buy=$result->ticker->buy;
             $ticker->high=$result->ticker->high;
             $ticker->last_price=$result->ticker->last;
@@ -96,7 +97,7 @@ class OKTOOL{
             foreach ($ordersresult as $key) {
                 //取出api结果
                 $orderinfo=Orderinfo::firstOrCreate('order_id',$key->order_id);
-                $orderinfo->user_id=$request->user()->id;
+                $orderinfo->user_id=$this->request->user()->id;
                 $orderinfo->amount=$key->amount;  
                 $orderinfo->deal_amount=$key->deal_amount;  
                 $orderinfo->avg_price=$key->avg_price;
@@ -109,7 +110,7 @@ class OKTOOL{
                 $orderinfo->save();
             }
             if (count($ordersresult)<1) {
-                Orderinfo::where('status',1)->update(['status'=>-1]);
+                Orderinfo::where('status',1)->where('user_id',$this->request->user()->id)->update(['status'=>-1]);
             }
             break;
         case 'kline':
@@ -120,51 +121,53 @@ class OKTOOL{
             foreach ($result as $reskline) {
                 //取出每个kline
                 $kline=Kline::firstOrCreate('create_date',$reskline->create_date);
-                $kline['create_date']=date("Y/m/d H:i:s",substr($reskline[0],0,strlen($reskline[0])-3));  
-                $kline['start_price']=$reskline[1];
-                $kline['high_price']=$reskline[2];
-                $kline['low_price']=$reskline[3];
-                $kline['over_price']=$reskline[4];
-                $kline['vol']=$reskline[5];
-                $kline['dif_price']=$kline['high_price']-$kline['low_price'];
+                $kline->user_id=$this->request->user()->id;
+                $kline->create_date=date("Y/m/d H:i:s",substr($reskline[0],0,strlen($reskline[0])-3));  
+                $kline->start_price=$reskline[1];
+                $kline->high_price=$reskline[2];
+                $kline->low_price=$reskline[3];
+                $kline->over_price=$reskline[4];
+                $kline->vol=$reskline[5];
+                $kline->dif_price=$kline['high_price']-$kline['low_price'];
                 $kline->save();
             }
             break;
         case 'set':
             //更新上次设置set，上次成交价my_last_price，成交单位unit，价值波动n_price
-            $set=array();
+            $set=Set::firstOrCreate('user_id',$this->request->user()->id);
             //获取上次成交金额
-            $neworderinfo=get_new_info('orderinfo');
-            $set['my_last_price']=$neworderinfo['avg_price'];
+                $neworderinfo=get_new_info('orderinfo');
+                $set->my_last_price=$neworderinfo->avg_price;
             //根据kline计算价值波数值20条信息
-            $avgarray=$kline_db->select('','AVG(dif_price)','0,20','id desc');
-            $n_price=$avgarray[0]['AVG(dif_price)'];
-            $set['n_price']=$n_price;
-            $set['uprate']=UPRATE;
-            $set['unit']=UNIT;
-            $set['downrate']=DOWNRATE;
-            $set['create_date']=date('Y/m/d H:i:s');
-            $set_db->insert($set,true);
+            $n_price=Kline::where('user_id',$this->request->user()->id)->orderBy('id','desc')->avg('dif_price');
+            $set->user_id=$this->request->user()->id;
+            $set->n_price=$n_price;
+            $set->uprate=UPRATE;
+            $set->unit=UNIT;
+            $set->downrate=DOWNRATE;
+            $set->create_date=date('Y/m/d H:i:s');
+            $set->save();
             break;
         case 'borrow':
             //api
             $params = array('api_key' => $this->api_key, 'symbol' => 'btc_cny');
             $result = $this->client-> borrowsInfoApi($params);
             //todatabase
-            $borrow=array();
-            $borrow['borrow_btc']=$result->borrow_btc;
-            $borrow['borrow_cny']=$result->borrow_cny;
-            $borrow['borrow_ltc']=$result->borrow_ltc;
-            $borrow['can_borrow']=$result->can_borrow;
-            $borrow['interest_btc']=$result->interest_btc;
-            $borrow['interest_cny']=$result->interest_cny;
-            $borrow['interest_ltc']=$result->interest_ltc;
-            $borrow['today_interest_btc']=$result->today_interest_btc;
-            $borrow['today_interest_ltc']=$result->today_interest_ltc;
-            $borrow['today_interest_cny']=$result->today_interest_cny;
-            $borrow['result']=$result->result;
-            $borrow['create_date']=date('Y/m/d H:i:s');
-            $borrow_db->insert($borrow,true);	
+            $borrow=Borrow::firstOrCreate('user_id',$this->request->user()->id);
+            $borrwo->user_id=$this->request->user()->id;
+            $borrow->borrow_btc=$result->borrow_btc;
+            $borrow->borrow_cny=$result->borrow_cny;
+            $borrow->borrow_ltc=$result->borrow_ltc;
+            $borrow->can_borrow=$result->can_borrow;
+            $borrow->interest_btc=$result->interest_btc;
+            $borrow->interest_cny=$result->interest_cny;
+            $borrow->interest_ltc=$result->interest_ltc;
+            $borrow->today_interest_btc=$result->today_interest_btc;
+            $borrow->today_interest_ltc=$result->today_interest_ltc;
+            $borrow->today_interest_cny=$result->today_interest_cny;
+            $borrow->result=$result->result;
+            $borrow->create_date=date('Y/m/d H:i:s');
+            $borrow->save();	
             break;
         default:
             break;
@@ -173,12 +176,12 @@ class OKTOOL{
     //刷新数据
     public function update_data_database(){
         try{
-            api_to_database('userinfo');
-            api_to_database('orderinfo');
-            api_to_database('set');
-            api_to_database('kline');
-            api_to_database('ticker');
-            api_to_database('borrow');
+           $this->api_to_database('userinfo');
+           $this->api_to_database('orderinfo');
+           $this->api_to_database('set');
+           $this->api_to_database('kline');
+           $this->api_to_database('ticker');
+           $this->api_to_database('borrow');
         }
         catch(Exception $e)
         {
@@ -187,26 +190,17 @@ class OKTOOL{
     }
     //从数据库获取最新信息
     public function get_new_info($tablename){
-        //加载model
-        $userinfo_db=pc_base::load_model('okrobot_userinfo_model');
-        $ticker_db=pc_base::load_model('okrobot_ticker_model');
-        $orderinfo_db=pc_base::load_model('okrobot_orderinfo_model');
-        $trade_db=pc_base::load_model('okrobot_trade_model');
-        $set_db=pc_base::load_model('okrobot_set_model');
-        $trend_db=pc_base::load_model('okrobot_trend_model');
-        $kline_db=pc_base::load_model('okrobot_kline_model');
         switch ($tablename) {
         case 'userinfo':
-            $res=$newuserinfo=$userinfo_db->get_one('','*','id desc');
+            $res=$newuserinfo=Userinfo::where('user_id',$this->user()->id)->orderBy('id','desc')->first();
             return $res;
             break;
         case 'ticker':
-            $res=$newticker=$ticker_db->get_one('','*','id desc');
+            $res=$newticker=Ticker::where('user_id',$this->user()->id)->orderBy('id','desc')->first();
             return $res;
             break;
         case 'orderinfo':
-            $where=array('status'=>'2');
-            $res=$neworder=$orderinfo_db->get_one($where,'*','create_date desc');
+            $res=$newticker=Ticker::where('user_id',$this->user()->id)->where('status',2)->orderBy('create_date','desc')->first();
             return $res;
             break;
         case 'kline':
