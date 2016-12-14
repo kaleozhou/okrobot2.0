@@ -1,0 +1,79 @@
+<?php
+namespace App\OKCoin;
+use App\OKCoin\Requestor;
+use App\OKCoin\Rpc;
+use App\OKCoin\Autentication;
+use App\OKCoin\SimpleApiKeyAuthencation;
+use App\OKCoin\ApiKeyAuthentication;
+use App\OKCoin\OKCoinException;
+if (!function_exists('curl_init')) {
+    var_dump('The OKCoin client library requires the CURL PHP extension');
+}
+class OKCoinBase {
+	const API_BASE = '/api/v1/';
+	
+	//const WEB_BASE = 'https://www.okcoin.com/';//OKCoin国际站
+
+    const WEB_BASE = 'https://www.okcoin.cn/';//OKCoin中国站
+	
+	private $_rpc;
+	private $_authentication;
+
+	// This constructor is deprecated.
+	public function __construct($authentication, $tokens = null, $apiKeySecret = null) {
+		// First off, check for a legit authentication class type
+		if (is_a($authentication, 'Authentication')) {
+			$this -> _authentication = $authentication;
+		} else {
+			// Here, $authentication was not a valid authentication object, so
+			// analyze the constructor parameters and return the correct object.
+			// This should be considered deprecated, but it's here for backward compatibility.
+			// In older versions of this library, the first parameter of this constructor
+			// can be either an API key string or an OAuth object.
+			if ($tokens !== null) {
+				$this -> _authentication = new Authentication($authentication, $tokens);
+//			} else if ($authentication !== null && is_string($authentication)) {
+			} else if (true) {
+				$apiKey = $authentication;
+                var_dump($apiKeySecret);
+				if ($apiKeySecret === null) {
+					// Simple API key
+					$this -> _authentication = new ApiKeyAuthentication($apiKey, $apiKeySecret);
+					//$this -> _authentication = new SimpleApiKeyAuthentication($apiKey);
+				} else {
+					$this -> _authentication = new ApiKeyAuthentication($apiKey, $apiKeySecret);
+				}
+			} else {
+			//	throw new OKCoinException('Could not determine API authentication scheme');
+            //Log::info('Could not determine API authentication scheme');
+            //abort(404);
+			}
+
+		}
+
+		$this -> _rpc = new Rpc(new Requestor(), $this -> _authentication);
+	}
+
+	// Used for unit testing only
+	public function setRequestor($requestor) {
+		$this -> _rpc = new Rpc($requestor, $this -> _authentication);
+		return $this;
+	}
+
+	public function get($path, $params = array()) {
+		return $this -> _rpc -> request("GET", $path, $params);
+	}
+
+	public function post($path, $params = array()) {
+		return $this -> _rpc -> request("POST", $path, $params);
+	}
+
+	public function delete($path, $params = array()) {
+		return $this -> _rpc -> request("DELETE", $path, $params);
+	}
+
+	public function put($path, $params = array()) {
+		return $this -> _rpc -> request("PUT", $path, $params);
+	}
+
+}
