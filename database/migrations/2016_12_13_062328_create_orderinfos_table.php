@@ -20,7 +20,7 @@ class CreateOrderinfosTable extends Migration
             $table->date('create_date');
             $table->decimal('avg_price',15,4);
             $table->decimal('deal_amount',15,4);
-            $table->integer('order_id');
+            $table->string('order_id');
             $table->decimal('price',15,4);
             $table->integer('status');
             $table->string('ordertype');

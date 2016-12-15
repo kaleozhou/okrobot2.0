@@ -24,7 +24,7 @@ class CreateTickersTable extends Migration
             $table->decimal('base_rate',15,4);
             $table->decimal('dif_price',15,4);
             $table->decimal('vol',15,4);
-            $table->date('tickerdate');
+            $table->datetime('tickerdate');
             $table->timestamps();
         });
     }

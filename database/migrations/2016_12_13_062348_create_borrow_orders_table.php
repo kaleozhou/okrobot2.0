@@ -23,7 +23,7 @@ class CreateBorrowOrdersTable extends Migration
             $table->decimal('rate',15,4);
             $table->integer('status');
             $table->string('symbol');
-            $table->date('create_date');
+            $table->datetime('create_date');
             $table->timestamps();
         });
     }

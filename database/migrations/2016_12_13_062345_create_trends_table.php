@@ -18,7 +18,7 @@ class CreateTrendsTable extends Migration
             $table->integer('user_id')->index();
             $table->string('last_trade_type');
             $table->integer('last_trade_hits');
-            $table->date('create_date');
+            $table->datetime('create_date');
             $table->timestamps();
         });
     }

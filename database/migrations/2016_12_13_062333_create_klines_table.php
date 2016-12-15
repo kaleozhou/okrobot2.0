@@ -16,7 +16,7 @@ class CreateKlinesTable extends Migration
         Schema::create('klines', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->index();
-            $table->date('create_date');
+            $table->datetime('create_date');
             $table->decimal('start_price',15,4);
             $table->decimal('high_price',15,4);
             $table->decimal('low_price',15,4);

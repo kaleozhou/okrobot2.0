@@ -27,7 +27,7 @@ class CreateBorrowsTable extends Migration
             $table->decimal('today_interest_ltc',15,4);
             $table->decimal('today_interest_cny',15,4);
             $table->boolean('result');
-            $table->date('create_date');
+            $table->datetime('create_date');
             $table->timestamps();
         });
     }

@@ -1,11 +1,12 @@
 <?php 
-//api数据获取存入数据库
 namespace App\Libraries;
 use App\Models\Userinfo;
 use App\Models\Ticker;
 use App\Models\Orderinfo;
 use App\Models\Set;
 use App\Models\Trend;
+use App\Models\Trade;
+use App\Models\Sms;
 use App\Models\Kline;
 use App\Models\Borrow;
 use Illuminate\Http\Request;
@@ -15,8 +16,9 @@ class OKTOOL{
     public $secret_key;
     public $client;
     public $request;
+    public $user_id;
     /**
-     * @access 
+     * @access 登陆用户 
      * @author kaleo <kaleo1990@hotmail.com>
      * @param $api_key 用户api
      * @param $secret_key 
@@ -29,7 +31,14 @@ class OKTOOL{
         $this->secret_key=$secret_key;
         $this->client=$client;
         $this->request=$request;
+        $this->user_id=$request->user()->id;
     }
+    /**
+     * @access 获取api数据存入数据库 
+     * @author kaleo <kaleo1990@hotmail.com>
+     * @param
+     * @return
+     */
     public function api_to_database($tablename){
         //用户信息
         $res=false;
@@ -41,7 +50,7 @@ class OKTOOL{
             //todatabase
             if ($result->result) {
                 $userinfo=new Userinfo();
-                $userinfo->user_id=$this->request->user()->id;
+                $userinfo->user_id=$this->user_id;
                 $userinfo->asset_net=$result->info->funds->asset->net;
                 $userinfo->asset_total=$result->info->funds->asset->total;
                 $userinfo->borrow_btc=$result->info->funds->borrow->btc;
@@ -58,7 +67,7 @@ class OKTOOL{
             }
             else
             {
-                var_dump($result->error_code);
+                return $result->error_code;
             }
             return $res;
             break;
@@ -68,7 +77,7 @@ class OKTOOL{
             $result = $this->client-> tickerApi($params);
             //todatabase
             $ticker=new Ticker();
-            $ticker->user_id=$this->request->user()->id;
+            $ticker->user_id=$this->user_id;
             $ticker->buy=$result->ticker->buy;
             $ticker->high=$result->ticker->high;
             $ticker->last_price=$result->ticker->last;
@@ -76,7 +85,7 @@ class OKTOOL{
             $ticker->sell=$result->ticker->sell;
             $ticker->vol=$result->ticker->vol;
             //计算偏移率
-            $newset=get_new_info('set');
+            $newset=$this->get_new_info('set');
             $last_price=$ticker->last_price;
             $my_last_price=$newset->my_last_price;
             $dif_price=$last_price-$my_last_price;
@@ -90,27 +99,33 @@ class OKTOOL{
             break;
         case 'orderinfo':
             //批量获取用户订单
-            $params = array('api_key' => $this->api_key, 'symbol' => 'btc_cny', 'status' => 1, 'current_page' => '1', 'page_length' => '15');
+            $params = array('api_key' => $this->api_key, 'symbol' => 'btc_cny', 'status' => 2, 'current_page' => '1', 'page_length' => '15');
             $result = $this->client-> orderHistoryApi($params);
-            $orders=array();
-            $ordersresult=$result->orders;
-            foreach ($ordersresult as $key) {
-                //取出api结果
-                $orderinfo=Orderinfo::firstOrCreate('order_id',$key->order_id);
-                $orderinfo->user_id=$this->request->user()->id;
-                $orderinfo->amount=$key->amount;  
-                $orderinfo->deal_amount=$key->deal_amount;  
-                $orderinfo->avg_price=$key->avg_price;
-                $orderinfo->create_date=date("Y/m/d H:i:s",substr($key->create_date,0,strlen($key->create_date)-3));  
-                $orderinfo->order_id=$key->order_id;  
-                $orderinfo->price=$key->price;  
-                $orderinfo->status=$key->status;  
-                $orderinfo->symbol=$key->symbol;  
-                $orderinfo->ordertype=$key->type;  
-                $orderinfo->save();
+            if($result->result)
+            {
+                $ordersresult=$result->orders;
+                foreach ($ordersresult as $key) {
+                    //取出api结果
+                    $orderinfo=Orderinfo::firstOrNew(['order_id'=>$key->order_id]);
+                    $orderinfo->user_id=$this->user_id;
+                    $orderinfo->amount=$key->amount;  
+                    $orderinfo->deal_amount=$key->deal_amount;  
+                    $orderinfo->avg_price=$key->avg_price;
+                    $orderinfo->create_date=date("Y/m/d H:i:s",substr($key->create_date,0,strlen($key->create_date)-3));  
+                    $orderinfo->order_id=$key->order_id;  
+                    $orderinfo->price=$key->price;  
+                    $orderinfo->status=$key->status;  
+                    $orderinfo->symbol=$key->symbol;  
+                    $orderinfo->ordertype=$key->type;  
+                    $orderinfo->save();
+                }
+                if (count($ordersresult)<1) {
+                    Orderinfo::where('status',1)->where('user_id',$this->user_id)->update(['status'=>-1]);
+                }
             }
-            if (count($ordersresult)<1) {
-                Orderinfo::where('status',1)->where('user_id',$this->request->user()->id)->update(['status'=>-1]);
+            else
+            {
+                return $result->error_code;
             }
             break;
         case 'kline':
@@ -120,8 +135,8 @@ class OKTOOL{
             $result = $this->client->klineDataApi($params);
             foreach ($result as $reskline) {
                 //取出每个kline
-                $kline=Kline::firstOrCreate('create_date',$reskline->create_date);
-                $kline->user_id=$this->request->user()->id;
+                $kline=Kline::firstOrNew(['create_date'=>date("Y/m/d H:i:s",substr($reskline[0],0,strlen($reskline[0])-3))]);
+                $kline->user_id=$this->user_id;
                 $kline->create_date=date("Y/m/d H:i:s",substr($reskline[0],0,strlen($reskline[0])-3));  
                 $kline->start_price=$reskline[1];
                 $kline->high_price=$reskline[2];
@@ -134,17 +149,21 @@ class OKTOOL{
             break;
         case 'set':
             //更新上次设置set，上次成交价my_last_price，成交单位unit，价值波动n_price
-            $set=Set::firstOrCreate('user_id',$this->request->user()->id);
+            $set=Set::firstOrNew(['user_id'=>$this->user_id]);
             //获取上次成交金额
-                $neworderinfo=get_new_info('orderinfo');
-                $set->my_last_price=$neworderinfo->avg_price;
+            $neworderinfo=$this->get_new_info('orderinfo');
+            $set->my_last_price=$neworderinfo->avg_price;
             //根据kline计算价值波数值20条信息
-            $n_price=Kline::where('user_id',$this->request->user()->id)->orderBy('id','desc')->avg('dif_price');
-            $set->user_id=$this->request->user()->id;
+            $n_price=Kline::where('user_id',$this->user_id)->orderBy('id','desc')->avg('dif_price');
+            $set->user_id=$this->user_id;
             $set->n_price=$n_price;
-            $set->uprate=UPRATE;
-            $set->unit=UNIT;
-            $set->downrate=DOWNRATE;
+            //暂为使用
+            $set->uprate=config('okcoin.uprate');
+            $set->unit=config('okcoin.unit');
+            $set->unitrate=config('okcoin.unitrate');
+            $set->upline=config('okcoin.upline');
+            $set->downline=config('okcoin.downline');
+            $set->downrate=config('okcoin.downrate');
             $set->create_date=date('Y/m/d H:i:s');
             $set->save();
             break;
@@ -152,22 +171,29 @@ class OKTOOL{
             //api
             $params = array('api_key' => $this->api_key, 'symbol' => 'btc_cny');
             $result = $this->client-> borrowsInfoApi($params);
-            //todatabase
-            $borrow=Borrow::firstOrCreate('user_id',$this->request->user()->id);
-            $borrwo->user_id=$this->request->user()->id;
-            $borrow->borrow_btc=$result->borrow_btc;
-            $borrow->borrow_cny=$result->borrow_cny;
-            $borrow->borrow_ltc=$result->borrow_ltc;
-            $borrow->can_borrow=$result->can_borrow;
-            $borrow->interest_btc=$result->interest_btc;
-            $borrow->interest_cny=$result->interest_cny;
-            $borrow->interest_ltc=$result->interest_ltc;
-            $borrow->today_interest_btc=$result->today_interest_btc;
-            $borrow->today_interest_ltc=$result->today_interest_ltc;
-            $borrow->today_interest_cny=$result->today_interest_cny;
-            $borrow->result=$result->result;
-            $borrow->create_date=date('Y/m/d H:i:s');
-            $borrow->save();	
+            if($result->result)
+            {
+                //todatabase
+                $borrow=Borrow::firstOrNew(['user_id'=>$this->user_id]);
+                $borrow->user_id=$this->user_id;
+                $borrow->borrow_btc=$result->borrow_btc;
+                $borrow->borrow_cny=$result->borrow_cny;
+                $borrow->borrow_ltc=$result->borrow_ltc;
+                $borrow->can_borrow=$result->can_borrow;
+                $borrow->interest_btc=$result->interest_btc;
+                $borrow->interest_cny=$result->interest_cny;
+                $borrow->interest_ltc=$result->interest_ltc;
+                $borrow->today_interest_btc=$result->today_interest_btc;
+                $borrow->today_interest_ltc=$result->today_interest_ltc;
+                $borrow->today_interest_cny=$result->today_interest_cny;
+                $borrow->result=$result->result;
+                $borrow->create_date=date('Y/m/d H:i:s');
+                $borrow->save();	
+            }
+            else
+            {
+                return $result->error_code;
+            }
             break;
         default:
             break;
@@ -176,12 +202,16 @@ class OKTOOL{
     //刷新数据
     public function update_data_database(){
         try{
-           $this->api_to_database('userinfo');
-           $this->api_to_database('orderinfo');
-           $this->api_to_database('set');
-           $this->api_to_database('kline');
-           $this->api_to_database('ticker');
-           $this->api_to_database('borrow');
+            $res=$this->api_to_database('userinfo');
+            $res=$this->api_to_database('orderinfo');
+            $res=$this->api_to_database('kline');
+            $res=$this->api_to_database('set');
+            $res=$this->api_to_database('ticker');
+            $res=$this->api_to_database('borrow');
+            if($res!=null)
+            {
+                return $res;
+            }
         }
         catch(Exception $e)
         {
@@ -192,31 +222,31 @@ class OKTOOL{
     public function get_new_info($tablename){
         switch ($tablename) {
         case 'userinfo':
-            $res=$newuserinfo=Userinfo::where('user_id',$this->user()->id)->orderBy('id','desc')->first();
+            $res=$newuserinfo=Userinfo::where('user_id',$this->user_id)->orderBy('id','desc')->first();
             return $res;
             break;
         case 'ticker':
-            $res=$newticker=Ticker::where('user_id',$this->user()->id)->orderBy('id','desc')->first();
+            $res=$newticker=Ticker::where('user_id',$this->user_id)->orderBy('id','desc')->first();
             return $res;
             break;
         case 'orderinfo':
-            $res=$newticker=Ticker::where('user_id',$this->user()->id)->where('status',2)->orderBy('create_date','desc')->first();
+            $res=$newticker=Orderinfo::where('user_id',$this->user_id)->where('status',2)->orderBy('order_id','desc')->first();
             return $res;
             break;
         case 'kline':
-            $res=$newkline=$kline_db->get_one('','*','create_date desc');
+            $res=$newkline=Kline::where('user_id',$this->user_id)->orderBy('create_date','desc')->first();
             return $res;
             break;
         case 'set':
-            $res=$newset=$set_db->get_one('','*','id desc');
+            $res=$newset=Set::where('user_id',$this->user_id)->orderBy('id','desc')->first();
             return $res;
             break;
         case 'trend':
-            $res=$newtrend=$trend_db->get_one('','*','id desc');
+            $res=$newtrend=Trend::where('user_id',$this->user_id)->orderBy('id','desc')->first();
             return $res;
             break;
         case 'borrow':
-            $res=$newborrow=$borrow_db->get_one('','*','id desc');
+            $res=$newborrow=Borrow::where('user_id',$this->user_id)->orderBy('id','desc')->first();
             return $res;
             break;
         default:
@@ -226,11 +256,10 @@ class OKTOOL{
     }
     //发送通知短信
     public function send_sms($content){
-        $sms_db=pc_base::load_model('okrobot_sms_model');
-        $newsms=array();
-        $username=SMSUSERNAME;
-        $password=md5(SMSPASSWORD);
-        $phone=SMSPHONE;
+        $newsms=new Sms();
+        $username=config('okcoin.smsusername');
+        $password=md5(config('okcion.smspassword'));
+        $phone=config('okcoin.smsphone');
         $sms_type='短信宝';
         $url="http://api.smsbao.com/sms?u=$username&p=$password&m=$phone&c=$content";
         //初始化
@@ -245,117 +274,129 @@ class OKTOOL{
         $result = curl_exec($curl);
         //关闭URL请求
         curl_close($curl);
-        $newsms['username']=$username;
-        $newsms['password']=$password;
-        $newsms['phone']=$phone;
-        $newsms['content']=$content;
-        $newsms['result']=$result;
-        $newsms['sms_type']=$sms_type;
-        $sms_db->insert($newsms,true);
+        $newsms->username=$username;
+        $newsms->user_id=$this->user_id;
+        $newsms->password=$password;
+        $newsms->phone=$phone;
+        $newsms->content=$content;
+        $newsms->result=$result;
+        $newsms->sms_type=$sms_type;
+        $newsms->create_date=date('Y/m/d H:i:s');
+        $newsms->save();
+    }
+    //下单
+    public function totrade($tradetype,$value,$last_trade_type,$last_trade_hits){
+        //创建订单
+        $trade=new Trade();
+        //创建趋势
+        $trend=new Trend();
+        $symbol='btc_cny';
+        if ($tradetype=='sell_market') {
+            $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'amount' => $value);
+            $trade->amount=$value;
+        }
+        else
+        {
+            $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'price' => $value);
+            $trade->price=$value;
+        }
+        $result = $this->client->tradeApi($params);
+        if ($result->result) {
+            $trade->order_id=$result->order_id;
+        }
+        //插入数据库
+        $trade->user_id=$this->user_id;
+        $trade->symbol=$symbol;
+        $trade->tradetype=$tradetype;
+        $trade->result=$result->result;
+        $trade->save();
+        //插入trend的
+        $trend->user_id=$this->user_id;
+        $trend->last_trade_hits=$last_trade_hits;
+        $trend->last_trade_type=$last_trade_type;
+        $trend->create_date =date("Y/m/d H:i:s");
+        $trend->save(); 
     }
     //自动下单函数
     public function autotrade(){
         try{
-            //加载model
-            $userinfo_db=pc_base::load_model('okrobot_userinfo_model');
-            $ticker_db=pc_base::load_model('okrobot_ticker_model');
-            $orderinfo_db=pc_base::load_model('okrobot_orderinfo_model');
-            $trade_db=pc_base::load_model('okrobot_trade_model');
-            $set_db=pc_base::load_model('okrobot_set_model');
-            $trend_db=pc_base::load_model('okrobot_trend_model');
-            $kline_db=pc_base::load_model('okrobot_kline_model');
-            //创建OKCoinapt客户端
-            $this->client= new OKCoin(new OKCoin_ApiKeyAuthentication($this->api_key, $this->secret_key));
             //获取当前行情和基最新成交价价
-            $newticker=get_new_info('ticker');
-            $last_price=$newticker['last_price'];
-            //获取kline前一小时的记录
-            $newkline=get_new_info('kline');
-            $base_dif=$newkline['dif_price'];
+            $newticker=$this->get_new_info('ticker');
+            if($newticker!=null){
+
+                $last_price=$newticker->last_price;
+                $dif=$newticker->dif_price;
+            }
             //获取趋势
-            $newtrend=get_new_info('trend');
-            $last_trade_type=$newtrend['last_trade_type'];
-            $last_trade_hits=$newtrend['last_trade_hits'];
+            $newtrend=$this->get_new_info('trend');
+            $last_trade_type='';
+            $last_trade_hits=1;
+            if ($newtrend!=null) {
+                $last_trade_type=$newtrend->last_trade_type;
+                $last_trade_hits=$newtrend->last_trade_hits;
+            }
             //获取设置
-            $newset=get_new_info('set');
-            $my_last_price=$newset['my_last_price'];
-            $unit=$newset['unit'];
-            $n_price=$newset['n_price'];
-            $uprate=$newset['uprate'];
-            $downrate=$newset['downrate'];
+            $newset=$this->get_new_info('set');
+            if($newset!=null){
+                $my_last_price=$newset->my_last_price;
+                $unit=$newset->unit;
+                $n_price=$newset->n_price;
+                $uprate=$newset->uprate;
+                //设置止盈止损
+                $downline=$newset->downline;
+                $upline=$newset->upline;
+                $unitrate=$newset->unitrate;
+                $unit=$newset->unit;
+
+            }
             //获取当前用户信息
-            $newuserinfo=get_new_info('userinfo');
-            $free_cny=$newuserinfo['free_cny'];
-            $free_btc=$newuserinfo['free_btc'];
-            $freezed_btc=$newuserinfo['freezed_btc'];
-            $asset_total=$newuserinfo['asset_total'];
-            $asset_net=$newuserinfo['asset_net'];
-            //创建订单
-            $trade=array();
+            $newuserinfo=$this->get_new_info('userinfo');
+            if ($newuserinfo!=null) {
+                $free_cny=$newuserinfo->free_cny;
+                $free_btc=$newuserinfo->free_btc;
+                $freezed_btc=$newuserinfo->freezed_btc;
+                $asset_total=$newuserinfo->asset_total;
+                $asset_net=$newuserinfo->asset_net;
+            }
             //判断接下来是买还是卖
-            $dif=$newticker['dif_price'];
             $autoresult_order_id="";
-            //设置止盈止损
-            $downline=DOWNLINE;
-            $upline=UPLINE;
             //创建趋势单
-            $trend=array();
             if ($asset_net>$downline&&$asset_net<$upline)
             {
                 if ($dif>0)
                 {
-                    //应该价格在上升，下卖单
+                    //价格在上升
                     //判断是否达到触发值
                     //如果当前价格$last_price低于$my_last_price价值波动一个$n_price,
-                    if(abs($dif)>=UNITRATE*$n_price)
+                    if(abs($dif)>=$unitrate*$n_price)
                     {
                         //计算卖出btc的数量
-                        $amount=(UNIT*$asset_total)/$last_price;
-                        $trend['last_trade_hits']=$last_trade_hits+1;
+                        $amount=($unit*$asset_total)/$last_price;
                         if ($amount>$free_btc) {
                             $amount=$free_btc;
                         }
                         if($amount>0.01&&$amount<=$free_btc)
                         {
-                            $symbol='btc_cny';
+                            if ($last_trade_type=='up_1') {
+                                $amount=0.01; 
+                                $last_trade_hits=$last_trade_hits+1;
+                            }
+                            $last_trade_type='up_1';
                             $tradetype='sell_market';
-                            $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'amount' => $amount);
-                            $result = $this->client>tradeApi($params);
-                            //插入数据库
-                            $trade['amount']=$amount;
-                            $trade['symbol']=$symbol;
-                            $trade['tradetype']=$tradetype;
-                            $trade['result']=strval($result->result);
-                            $trade_db->insert($trade,true);
-                            //插入trend的
-                            $trend['last_trade_type']='up_1';
-                            $trend['last_trade_hits']=1;
-                            $trend['create_date'] =date("Y/m/d H:i:s");
-                            $trend_db->insert($trend,true); 
+                            $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
                         }
                         else
                         {
+                            //卖完了
                             //判断是否是连击
                             $price=60;
                             if ($last_trade_type=='up_2') {
-                                $trend['last_trade_hits']=$last_trade_hits+1;
+                                $last_trade_hits=$last_trade_hits+1;
                             }
-                            $symbol='btc_cny';
+                            $last_trade_type='up_2';
                             $tradetype='buy_market';
-                            $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'price' => $price);
-                            $result = $this->client-> tradeApi($params);
-                            //插入数据库
-                            $trade['price']=$price;
-                            $trade['symbol']=$symbol;
-                            $trade['tradetype']=$tradetype;
-                            $trade['result']=strval($result->result);
-                            $trade_db->insert($trade,true);
-                            //插入trend的
-                            $trend['last_trade_type']='up_2';
-                            $trend['last_trade_hits']=1;
-                            $trend['create_date'] =date("Y/m/d H:i:s");
-                            $trend_db->insert($trend,true); 
-                            send_sms('卖完了,价格在急速上升！');
+                            $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
+                            $this->send_sms('卖完了,价格在急速上升！');
                         }
                     }
                 }
@@ -363,65 +404,48 @@ class OKTOOL{
                 {
                     //价格在下降，买单
                     //判断是否达到出发值
-                    if(abs($dif)>=UNITRATE*$n_price)
+                    if(abs($dif)>=$unitrate*$n_price)
                     {
-                        //计算买入金额
-                        $price=UNIT*$asset_total;
-                        //判断是否是连击,如果是则
-                        if ($last_trade_type=='down_1') {
-                            if ($last_trade_hits>=2) {
-                                $price=60;   
+                        if ($last_trade_type=='up_1'&&$last_trade_hits=1) {
+                            //买入一个单位，小额建仓
+                            $price=$unit*$asset_total;
+                            if ($price>$free_cny) {
+                                $price=$free_cny;
                             }
-                            $trend['last_trade_hits']=$last_trade_hits+1;
+                            if($price>=60&&$price<=$free_cny)
+                            {
+                                $last_trade_type='down_1';
+                                $last_trade_hits=1;
+                                $tradetype='buy_market';
+                                $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
+                            }
+                            else
+                            {
+                                //卖出0.01btc比更新价格
+                                $amount=0.01;
+                                $this->send_sms('已经锁定利润！');
+                            }
                         }
-                        if ($price>$free_cny) {
-                            // 如果大于证明偏离过大
-                            $price=$free_cny;
-                        }
-                        if($price>=60&&$price<=$free_cny)
+                        else
                         {
-                            $symbol='btc_cny';
-                            $tradetype='buy_market';
-                            $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'price' => $price);
-                            $result = $this->client-> tradeApi($params);
-                            //插入数据库
-                            $trade['price']=$price;
-                            $trade['symbol']=$symbol;
-                            $trade['tradetype']=$tradetype;
-                            $trade['result']=strval($result->result);
-                            $trade_db->insert($trade,true);
-                            //插入trend的
-                            $trend['last_trade_type']='down_1';
-                            $trend['last_trade_hits']=1;
-                            $trend['create_date'] =date("Y/m/d H:i:s");
-                            $trend_db->insert($trend,true); 
-                        }
-                        else if($price<60)
-                        {
+                            //下卖但锁定利润
                             //卖出0.01btc比更新价格
-                            $amount=0.01;
-                            if ($last_trade_type=='down_2') {
-                                if ($last_trade_hits>1) {
-                                    $amount=0.01;   
-                                }
-                                $trend['last_trade_hits']=$last_trade_hits+1;
+                            $amount=$free_btc;
+                            $last_trade_type='down_1';
+                            if ($amount>0.01) {
+                                $last_trade_hits++;
+                                $tradetype='sell_market';
+                                $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
                             }
-                            $symbol='btc_cny';
-                            $tradetype='sell_market';
-                            $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'amount' => $amount);
-                            $result = $this->client>tradeApi($params);
-                            //插入数据库
-                            $trade['amount']=$amount;
-                            $trade['symbol']=$symbol;
-                            $trade['tradetype']=$tradetype;
-                            $trade['result']=strval($result->result);
-                            $trade_db->insert($trade,true);
-                            //插入trend的
-                            $trend['last_trade_type']='down_2';
-                            $trend['last_trade_hits']=1;
-                            $trend['create_date'] =date("Y/m/d H:i:s");
-                            $trend_db->insert($trend,true); 
-                            send_sms('价格在急速下降！');
+                            else
+                            {
+                                //卖完了
+                                //判断是否是连击
+                                $price=60;
+                                $tradetype='buy_market';
+                                $last_trade_hits++;
+                                $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
+                            }
                         }
                     }
                 }
@@ -430,23 +454,20 @@ class OKTOOL{
             {
                 //卖出所有的币止损
                 $amount=$free_btc;
-                if($amount>0.01)
-                {
-                    $symbol='btc_cny';
+                $last_trade_type='down_1';
+                if ($amount>0.01) {
+                    $last_trade_hits++;
                     $tradetype='sell_market';
-                    $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'type' => $tradetype,  'amount' => $amount);
-                    $result = $this->client>tradeApi($params);
-                    //插入数据库
-                    $trade['amount']=$amount;
-                    $trade['symbol']=$symbol;
-                    $trade['tradetype']=$tradetype;
-                    $trade['result']=strval($result->result);
-                    $trade_db->insert($trade,true);
-                    //插入trend的
-                    $trend['last_trade_type']='up_1';
-                    $trend['last_trade_hits']=1;
-                    $trend['create_date'] =date("Y/m/d H:i:s");
-                    $trend_db->insert($trend,true); 
+                    $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
+                }
+                else
+                {
+                    //卖完了
+                    //判断是否是连击
+                    $price=60;
+                    $tradetype='buy_market';
+                    $last_trade_hits++;
+                    $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
                 }
                 //停止工作
                 $autoresult_order_id='upline';
@@ -456,14 +477,13 @@ class OKTOOL{
                     $sms='已经止损！';
                 }
                 //发送通知
-                send_sms($sms);
+                $this->send_sms($sms);
             }
-            return $autoresult_order_id;
-        }catch(Exception $e)
+        }
+        catch(Exception $e)
         {
             return $e;
         }
     }
-
 }
 ?>

@@ -18,10 +18,10 @@ class CreateTradesTable extends Migration
             $table->integer('user_id')->index();
             $table->string('symbol');
             $table->string('tradetype');
-            $table->decimal('price',15,4);
-            $table->decimal('amount',15,4);
+            $table->decimal('price',15,4)->nullable();
+            $table->decimal('amount',15,4)->nullable();
             $table->boolean('result');
-            $table->integer('order_id');
+            $table->string('order_id')->nullable();
             $table->timestamps();
         });
     }
