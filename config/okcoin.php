@@ -13,8 +13,8 @@ return[
 'upline'=>10000,//止盈值
 'uprate'=>0.35,//上浮率
 'downrate'=>0.25,//下浮动率
-'unit'=>0.4,//下单单位
-'unitrate'=>0.5,//买入，卖出对价值波动的比率
+'unit'=>0.2,//下单单位
+'unitrate'=>0.3,//买入，卖出对价值波动的比率
 'klinetype'=>"30min",//kline的周期
 'smsusername'=>"kaleozhou",//短信用户名
 'smspassword'=>"zh13275747670",//短信密码

@@ -323,7 +323,6 @@ class OKTOOL{
             //获取当前行情和基最新成交价价
             $newticker=$this->get_new_info('ticker');
             if($newticker!=null){
-
                 $last_price=$newticker->last_price;
                 $dif=$newticker->dif_price;
             }
@@ -347,7 +346,6 @@ class OKTOOL{
                 $upline=$newset->upline;
                 $unitrate=$newset->unitrate;
                 $unit=$newset->unit;
-
             }
             //获取当前用户信息
             $newuserinfo=$this->get_new_info('userinfo');
@@ -377,23 +375,46 @@ class OKTOOL{
                         }
                         if($amount>0.01&&$amount<=$free_btc)
                         {
+                            //如果连续上升，买入
                             if ($last_trade_type=='up_1') {
-                                $amount=0.01; 
                                 $last_trade_hits=$last_trade_hits+1;
+                                $tradetype='buy_market';
+                                $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
+                                //买入一个单位，小额建仓
+                                $price=$unit*$asset_total;
+                                if ($price>$free_cny)
+                                {
+                                    $price=$free_cny;
+                                }
+                                if($price>=60&&$price<=$free_cny)
+                                {
+                                    $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
+                                }
+                                else
+                                {
+                                    //卖出0.01btc比更新价格
+                                    $amount=0.01;
+                                    $tradetype='sell_market';
+                                    $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
+                                    $this->send_sms('已经锁定利润！');
+                                }
                             }
-                            $last_trade_type='up_1';
-                            $tradetype='sell_market';
-                            $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
+                            else
+                            {
+                                $last_trade_type='up_1';
+                                $tradetype='sell_market';
+                                $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
+                            }
                         }
                         else
                         {
                             //卖完了
                             //判断是否是连击
                             $price=60;
-                            if ($last_trade_type=='up_2') {
+                            if ($last_trade_type=='up_1') {
                                 $last_trade_hits=$last_trade_hits+1;
                             }
-                            $last_trade_type='up_2';
+                            $last_trade_type='up_1';
                             $tradetype='buy_market';
                             $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
                             $this->send_sms('卖完了,价格在急速上升！');
@@ -406,10 +427,12 @@ class OKTOOL{
                     //判断是否达到出发值
                     if(abs($dif)>=$unitrate*$n_price)
                     {
-                        if ($last_trade_type=='up_1'&&$last_trade_hits=1) {
+                        if ($last_trade_type=='up_1'&&$last_trade_hits=1)
+                        {
                             //买入一个单位，小额建仓
                             $price=$unit*$asset_total;
-                            if ($price>$free_cny) {
+                            if ($price>$free_cny)
+                            {
                                 $price=$free_cny;
                             }
                             if($price>=60&&$price<=$free_cny)
@@ -423,6 +446,10 @@ class OKTOOL{
                             {
                                 //卖出0.01btc比更新价格
                                 $amount=0.01;
+                                $last_trade_type='down_1';
+                                $last_trade_hits=1;
+                                $tradetype='sell_market';
+                                $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
                                 $this->send_sms('已经锁定利润！');
                             }
                         }

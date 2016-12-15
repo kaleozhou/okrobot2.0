@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Userinfo;
+use App\Models\Orderinfo;
 use App\OKCoin\OKCoin;
 use App\OKCoin\ApiKeyAuthentication;
 use App\Libraries\OKTOOL;
@@ -25,6 +26,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        $login_user=$request->user();
         //读取配置文件的key
         $api_key=$request->user()->api_key;
         $secret_key=$request->user()->secret_key;
@@ -41,7 +43,10 @@ class HomeController extends Controller
         $newuserinfo=$OKTOOL->get_new_info('userinfo');
         $newticker=$OKTOOL->get_new_info('ticker');
         $newset=$OKTOOL->get_new_info('set');
-
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset]);
+        $orderinfos=Orderinfo::where('status','2')
+                            ->where('user_id',$login_user->id)
+                            ->orderBy('order_id','desc')
+                            ->simplePaginate(5);
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos]);
     }
 }

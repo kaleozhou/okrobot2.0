@@ -17,7 +17,7 @@ class CreateOrderinfosTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->index();
             $table->decimal('amount',15,4);
-            $table->date('create_date');
+            $table->datetime('create_date');
             $table->decimal('avg_price',15,4);
             $table->decimal('deal_amount',15,4);
             $table->string('order_id');
