@@ -41,13 +41,6 @@ class HomeController extends Controller
         $newuserinfo=$OKTOOL->get_new_info('userinfo');
         $newticker=$OKTOOL->get_new_info('ticker');
         $newset=$OKTOOL->get_new_info('set');
-        $str='asset_net:'.$newuserinfo->asset_net;
-        $str=$str.'|asset_total:'.$newuserinfo->asset_total;
-        $str=$str.'|free_cny:'.$newuserinfo->free_cny;
-        $str=$str.'|free_btc:'.$newuserinfo->free_btc;
-        $str=$str.'|last_price:'.$newticker->last_price;
-        $str=$str.'|dif_price:'.$newticker->dif_price;
-        $str=$str.'|my_last_price:'.$newset->my_last_price;
 
         return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset]);
     }
