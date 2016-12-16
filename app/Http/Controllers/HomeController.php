@@ -28,16 +28,9 @@ class HomeController extends Controller
     {
         $login_user=$request->user();
         //读取配置文件的key
-        $api_key=$request->user()->api_key;
-        $secret_key=$request->user()->secret_key;
-        if ($api_key==null) {
-            $api_key=config('okcoin.api_key');
-        }
-        if ($secret_key==null) {
-            $secret_key=config('okcoin.secret_key');
-        }
-        $client =new OKCoin(new ApikeyAuthentication($api_key,$secret_key));
-        $OKTOOL=new OKTOOL($api_key,$secret_key,$client,$request);
+        if ($login_user->api_key!=null&&$login_user->secret_key!=null) {
+            
+        $OKTOOL=new OKTOOL($login_user);
         $res=$OKTOOL->update_data_database();
         $res=$OKTOOL->autotrade();
         $newuserinfo=$OKTOOL->get_new_info('userinfo');
@@ -48,5 +41,10 @@ class HomeController extends Controller
                             ->orderBy('order_id','desc')
                             ->simplePaginate(5);
         return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos]);
+        }
+        else
+        {
+            var_dump('请设置你的api_key和secret_key!');
+        }
     }
 }

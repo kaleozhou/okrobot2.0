@@ -9,13 +9,14 @@ use App\Models\Trade;
 use App\Models\Sms;
 use App\Models\Kline;
 use App\Models\Borrow;
+use App\OKCoin\OKCoin;
+use App\OKCoin\ApiKeyAuthentication;
 use Illuminate\Http\Request;
 use DB;
 class OKTOOL{
     public $api_key;
     public $secret_key;
     public $client;
-    public $request;
     public $user_id;
     /**
      * @access 登陆用户 
@@ -25,13 +26,12 @@ class OKTOOL{
      * @param $client OKCoin类
      * @return
      */
-    public function __construct($api_key,$secret_key,$client,$request)
+    public function __construct($login_user)
     {
-        $this->api_key=$api_key;
-        $this->secret_key=$secret_key;
-        $this->client=$client;
-        $this->request=$request;
-        $this->user_id=$request->user()->id;
+        $this->api_key=$login_user->api_key;
+        $this->secret_key=$login_user->secret_key;
+        $this->client=new OKCoin(new ApikeyAuthentication($this->api_key,$this->secret_key));
+        $this->user_id=$login_user->id;
     }
     /**
      * @access 获取api数据存入数据库 
