@@ -428,7 +428,7 @@ class OKTOOL{
                     //判断是否达到出发值
                     if(abs($dif)>=$unitrate*$n_price)
                     {
-                        if ($last_trade_type=='up_1'&&$last_trade_hits=1)
+                        if ($last_trade_type=='up_1'&&$last_trade_hits<=1)
                         {
                             //买入一个单位，小额建仓
                             $price=$unit*$asset_total;
