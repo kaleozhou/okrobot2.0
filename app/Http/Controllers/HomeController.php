@@ -27,8 +27,8 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $login_user=$request->user();
-        $login_user->api_key=congig('okcoin.api_key');
-        $login_user->secret_key=congig('okcoin.secret_key');
+        $login_user->api_key=config('okcoin.api_key');
+        $login_user->secret_key=config('okcoin.secret_key');
         $login_user->save();
         if ($login_user->api_key!=null&&$login_user->secret_key!=null) {
         $OKTOOL=new OKTOOL($login_user);
