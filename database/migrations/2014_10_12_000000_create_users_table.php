@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('api_key')->nullable();
             $table->string('secret_key')->nullable();
+            $table->boolean('autotrade')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -17,16 +17,19 @@ td{width:90px}
                 <div class="panel-body">
 <h1>账户信息</h1>
 <table>
+@if ($userinfo!=null)
     <tr>
         <td>余额：</td>
-        <td class='green'>{{$userinfo['asset_net']}}</td>
+        <td class='green'>{{$userinfo->asset_net}}</td>
         <td>总额：</td>
-        <td class='green'>{{$userinfo['asset_total']}}</td>
+        <td class='green'>{{$userinfo->asset_total}}</td>
         <td>可用人民币：</td>
-        <td class='green'>{{$userinfo['free_cny']}}</td>
+        <td class='green'>{{$userinfo->free_cny}}</td>
         <td>可用btc：</td>
-        <td class='green'>{{$userinfo['free_btc']}}</td>
+        <td class='green'>{{$userinfo->free_btc}}</td>
     </tr>
+@endif
+@if ($ticker!=null&&$set!=null)
     <tr>
         <td>最新价格：</td>
         <td class='green'>{{$ticker->last_price}}</td>
@@ -37,9 +40,11 @@ td{width:90px}
         <td>差价：</td>
         <td class='green'>{{$ticker->dif_price}}</td>
     </tr>
+@endif
 </table>
 <h1>我的订单</h1>
 <table>
+@if ($orderinfos!=null)
 @foreach ($orderinfos as $orderinfo)
     <tr>
         <td>成交价格</td>
@@ -58,6 +63,9 @@ td{width:90px}
 @endforeach
 </table>
 {{$orderinfos->links()}}
+<a href='/starttrade'>开始自动交易</a>
+<a href='/stoptrade'>停止自动交易</a>
+@endif
                 </div>
             </div>
         </div>

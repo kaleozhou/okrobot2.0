@@ -16,17 +16,8 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
 Route::get('/home', 'HomeController@index');
+Route::get('/starttrade', 'HomeController@starttrade');
+Route::get('/stoptrade', 'HomeController@stoptrade');
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index');

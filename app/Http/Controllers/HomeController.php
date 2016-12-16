@@ -7,6 +7,7 @@ use App\OKCoin\ApiKeyAuthentication;
 use App\Libraries\OKTOOL;
 use DB;
 use Illuminate\Http\Request;
+use App\Notifications\InvoicePaid;
 class HomeController extends Controller
 {
     /**
@@ -18,7 +19,6 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
     }
-
     /**
      * Show the application dashboard.
      *
@@ -27,10 +27,9 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $login_user=$request->user();
-      //  $login_user->api_key=config('okcoin.api_key');
-      //  $login_user->secret_key=config('okcoin.secret_key');
-      //  $login_user->save();
-        if ($login_user->api_key!=null&&$login_user->secret_key!=null) {
+        //$login_user->api_key=config('okcoin.api_key');
+        //$login_user->secret_key=config('okcoin.secret_key');
+        //$login_user->save();
         $OKTOOL=new OKTOOL($login_user);
         $res=$OKTOOL->update_data_database();
         $res=$OKTOOL->autotrade();
@@ -38,14 +37,53 @@ class HomeController extends Controller
         $newticker=$OKTOOL->get_new_info('ticker');
         $newset=$OKTOOL->get_new_info('set');
         $orderinfos=Orderinfo::where('status','2')
-                            ->where('user_id',$login_user->id)
-                            ->orderBy('order_id','desc')
-                            ->simplePaginate(5);
+            ->where('user_id',$login_user->id)
+            ->orderBy('order_id','desc')
+            ->simplePaginate(5);
         return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos]);
+    }
+    public function starttrade(Request $request){
+        $login_user=$request->user();
+        $login_user->autotrade=true;
+        $login_user->save();
+        $res=$this->autotrade($login_user);
+    }
+    public function stoptrade(Request $request){
+        $login_user=$request->user();
+        $login_user->autotrade=false;
+        $login_user->save();
+        return view('welcome');
+    }
+
+    /**
+     * @access public 
+     * @author kaleo <kaleo1990@hotmail.com>
+     * @param  $user 传入用户模型
+     * @return 
+     */
+    public function autotrade($user){
+        //检测是否设置api_key
+        try{
+            if($user->autotrade)
+            {
+                if ($user->api_key!=null&&$user->secret_key!=null)
+                {
+                    $OKTOOL=new OKTOOL($user);
+                    $res=$OKTOOL->update_data_database();
+                    $res=$OKTOOL->autotrade();
+                }
+                else
+                {
+                    return false;
+                    var_dump('请设置你的api_key和secret_key!');
+                }
+            }
         }
-        else
-        {
-            var_dump('请设置你的api_key和secret_key!');
+        catch(exception $e){
+            //修改设置
+            $user->autotrade=false;
+            $user->save();
+            return false;
         }
     }
 }
