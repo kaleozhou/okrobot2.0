@@ -376,7 +376,8 @@ class OKTOOL{
                         if($amount>0.01&&$amount<=$free_btc)
                         {
                             //如果连续上升，买入
-                            if ($last_trade_type=='up_1') {
+                            if ($last_trade_type=='up_1')
+                            {
                                 $last_trade_hits++;
                                 $tradetype='buy_market';
                                 //买入一个单位，小额建仓
@@ -411,9 +412,12 @@ class OKTOOL{
                             //卖完了
                             //判断是否是连击
                             $price=60;
-                                $last_trade_hits=1;
                             if ($last_trade_type=='up_1') {
-                                $last_trade_hits=$last_trade_hits+1;
+                                $last_trade_hits++;
+                            }
+                            else
+                            {
+                                $last_trade_hits=1;
                             }
                             $last_trade_type='up_1';
                             $tradetype='buy_market';
@@ -456,13 +460,14 @@ class OKTOOL{
                         }
                         else
                         {
-                            //下卖但锁定利润
-                            //卖出0.01btc比更新价格
+                            //下卖单锁定利润
                             $amount=$free_btc;
-                                $last_trade_hits=1;
                             if ($last_trade_type='down_1') {
-                                // code...
                                 $last_trade_hits++;
+                            }
+                            else
+                            {
+                                $last_trade_hits=1;
                             }
                             $last_trade_type='down_1';
                             if ($amount>0.01) {
@@ -472,7 +477,6 @@ class OKTOOL{
                             else
                             {
                                 //卖完了
-                                //判断是否是连击
                                 $price=60;
                                 $tradetype='buy_market';
                                 $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
