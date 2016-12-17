@@ -25,10 +25,10 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $login_user=$request->user();
         //$login_user->api_key=config('okcoin.api_key');
         //$login_user->secret_key=config('okcoin.secret_key');
         //$login_user->save();
+        $login_user=$request->user();
         $OKTOOL=new OKTOOL($login_user);
         $newuserinfo=$OKTOOL->get_new_info('userinfo');
         $newticker=$OKTOOL->get_new_info('ticker');
@@ -43,12 +43,31 @@ class HomeController extends Controller
         $login_user=$request->user();
         $login_user->autotrade=true;
         $login_user->save();
+        $login_user=$request->user();
+        $OKTOOL=new OKTOOL($login_user);
+        $newuserinfo=$OKTOOL->get_new_info('userinfo');
+        $newticker=$OKTOOL->get_new_info('ticker');
+        $newset=$OKTOOL->get_new_info('set');
+        $orderinfos=Orderinfo::where('status','2')
+            ->where('user_id',$login_user->id)
+            ->orderBy('order_id','desc')
+            ->simplePaginate(5);
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos]);
     }
     public function stoptrade(Request $request){
         $login_user=$request->user();
         $login_user->autotrade=false;
         $login_user->save();
-        return view('welcome');
+        $login_user=$request->user();
+        $OKTOOL=new OKTOOL($login_user);
+        $newuserinfo=$OKTOOL->get_new_info('userinfo');
+        $newticker=$OKTOOL->get_new_info('ticker');
+        $newset=$OKTOOL->get_new_info('set');
+        $orderinfos=Orderinfo::where('status','2')
+            ->where('user_id',$login_user->id)
+            ->orderBy('order_id','desc')
+            ->simplePaginate(5);
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos]);
     }
 
     /**
