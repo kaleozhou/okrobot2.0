@@ -64,6 +64,7 @@ class Kernel extends ConsoleKernel
             }
             else
             {
+                for ($i = 0; $i < 8; $i++) {
                     foreach ($users as $user) {
                         try{
                             if ($user->api_key!=null&&$user->secret_key!=null)
@@ -83,7 +84,9 @@ class Kernel extends ConsoleKernel
                             $user->autotrade=false;
                             $user->save();
                         }
+                        sleep(3);
                     }
+                }
             }
         })->everyMinute();
     }
