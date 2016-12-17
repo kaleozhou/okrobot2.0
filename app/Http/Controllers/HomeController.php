@@ -37,13 +37,15 @@ class HomeController extends Controller
             ->where('user_id',$login_user->id)
             ->orderBy('order_id','desc')
             ->simplePaginate(5);
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos]);
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user]);
     }
     public function starttrade(Request $request){
         $login_user=$request->user();
-        $login_user->autotrade=true;
-        $login_user->save();
-        $login_user=$request->user();
+        if ($login_user->api_key!=null&&$login_user->secret_key!=null)
+        {
+            $login_user->autotrade=true;
+            $login_user->save();
+        }
         $OKTOOL=new OKTOOL($login_user);
         $newuserinfo=$OKTOOL->get_new_info('userinfo');
         $newticker=$OKTOOL->get_new_info('ticker');
@@ -52,13 +54,12 @@ class HomeController extends Controller
             ->where('user_id',$login_user->id)
             ->orderBy('order_id','desc')
             ->simplePaginate(5);
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos]);
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user]);
     }
     public function stoptrade(Request $request){
         $login_user=$request->user();
         $login_user->autotrade=false;
         $login_user->save();
-        $login_user=$request->user();
         $OKTOOL=new OKTOOL($login_user);
         $newuserinfo=$OKTOOL->get_new_info('userinfo');
         $newticker=$OKTOOL->get_new_info('ticker');
@@ -67,7 +68,7 @@ class HomeController extends Controller
             ->where('user_id',$login_user->id)
             ->orderBy('order_id','desc')
             ->simplePaginate(5);
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos]);
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user]);
     }
 
     /**
@@ -79,17 +80,17 @@ class HomeController extends Controller
     public function autotrade($user){
         //检测是否设置api_key
         try{
-                if ($user->api_key!=null&&$user->secret_key!=null)
-                {
-                    $OKTOOL=new OKTOOL($user);
-                    $res=$OKTOOL->update_data_database();
-                    $res=$OKTOOL->autotrade();
-                }
-                else
-                {
-                    return false;
-                    var_dump('请设置你的api_key和secret_key!');
-                }
+            if ($user->api_key!=null&&$user->secret_key!=null)
+            {
+                $OKTOOL=new OKTOOL($user);
+                $res=$OKTOOL->update_data_database();
+                $res=$OKTOOL->autotrade();
+            }
+            else
+            {
+                return false;
+                var_dump('请设置你的api_key和secret_key!');
+            }
         }
         catch(exception $e){
             //修改设置

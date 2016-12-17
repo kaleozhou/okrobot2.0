@@ -7,15 +7,29 @@ td{width:90px}
 .green{color:green}
 .wd60{width:60px}
 .wd120{width:130px}
+label{}
+.red{color:red}
+.green{color:green}
 </style>
 <meta http-equiv="refresh" content="5">
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">控制面板</div>
+                <div class="panel-heading">
+                          <label>控制面板</label><br>
+                    <label> 交易状态：</label>
+                    @if ($user->autotrade=='1')
+                    <label class='green'>运行中</label>
+                    @else
+                    <label class='red'>已停止</label>
+                    @endif
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href='/starttrade'>开始交易</a>
+                    <a href='/stoptrade'>停止交易</a>
+                </div>
                 <div class="panel-body">
-<h1>账户信息</h1>
+<h4>账户信息</h4>
 <table>
 @if ($userinfo!=null)
     <tr>
@@ -42,7 +56,7 @@ td{width:90px}
     </tr>
 @endif
 </table>
-<h1>我的订单</h1>
+<h4>我的订单</h4>
 <table>
 @if ($orderinfos!=null)
 @foreach ($orderinfos as $orderinfo)
@@ -63,8 +77,6 @@ td{width:90px}
 @endforeach
 </table>
 {{$orderinfos->links()}}
-<a href='/starttrade'>开始自动交易</a>
-<a href='/stoptrade'>停止自动交易</a>
 @endif
                 </div>
             </div>
