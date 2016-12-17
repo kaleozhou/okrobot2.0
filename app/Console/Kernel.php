@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
             }
             else
             {
-                for ($i = 0; $i <= 8/count($users); $i++) {
+                for ($i = 0; $i <= 10/count($users); $i++) {
                     foreach ($users as $user) {
                         try{
                             if ($user->api_key!=null&&$user->secret_key!=null)
@@ -55,7 +55,7 @@ class Kernel extends ConsoleKernel
                             $user->save();
                         }
                     }
-                    sleep(5);
+                    sleep(3);
                 }
             }
         })->everyMinute();
