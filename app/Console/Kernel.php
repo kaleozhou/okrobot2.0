@@ -33,7 +33,6 @@ class Kernel extends ConsoleKernel
             }
             else
             {
-                for ($i = 0; $i <= 10/count($users); $i++) {
                     foreach ($users as $user) {
                         try{
                             if ($user->api_key!=null&&$user->secret_key!=null)
@@ -55,8 +54,36 @@ class Kernel extends ConsoleKernel
                             $user->save();
                         }
                     }
-                    sleep(3);
-                }
+            }
+        })->everyFiveMinute();
+        $schedule->call(function()
+        {
+            $users=User::where('autotrade',true)->get();
+            if (count($users)<1) {
+                Log::info('没有用户自动交易');
+            }
+            else
+            {
+                    foreach ($users as $user) {
+                        try{
+                            if ($user->api_key!=null&&$user->secret_key!=null)
+                            {
+                                $OKTOOL=new OKTOOL($user);
+                                $res=$OKTOOL->update_data_database();
+                                $newuserinfo=$OKTOOL->get_new_info('userinfo');
+                                Log::info('name: '.$user->name.'更新');
+                            }
+                            else
+                            {
+                                Log::info('name: '.$user->name.' 请设置你的api_key和secret_key!');
+                            }
+                        }
+                        catch(exception $e){
+                            //修改设置
+                            $user->autotrade=false;
+                            $user->save();
+                        }
+                    }
             }
         })->everyMinute();
     }
