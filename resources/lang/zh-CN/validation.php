@@ -39,6 +39,8 @@ return [
     'dimensions'           => ':attribute 图片尺寸不正确。',
     'distinct'             => ':attribute 已经存在。',
     'email'                => ':attribute 不是一个合法的邮箱。',
+    'api_key'                => ':attribute api_key输入错误请输入正确的key',
+    'secret_key'                => ':attribute secret_key输入错误请输入正确的key。',
     'exists'               => ':attribute 不存在。',
     'file'                 => ':attribute 必须是文件。',
     'filled'               => ':attribute 不能为空。',
