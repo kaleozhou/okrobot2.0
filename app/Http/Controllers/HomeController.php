@@ -2,10 +2,9 @@
 namespace App\Http\Controllers;
 use App\Models\Userinfo;
 use App\Models\Orderinfo;
-use App\OKCoin\OKCoin;
-use App\OKCoin\ApiKeyAuthentication;
 use App\Libraries\OKTOOL;
 use DB;
+use Log;
 use Illuminate\Http\Request;
 use App\Notifications\InvoicePaid;
 class HomeController extends Controller
@@ -30,9 +29,6 @@ class HomeController extends Controller
         //$login_user->api_key=config('okcoin.api_key');
         //$login_user->secret_key=config('okcoin.secret_key');
         //$login_user->save();
-        $OKTOOL=new OKTOOL($login_user);
-        $res=$OKTOOL->update_data_database();
-        $res=$OKTOOL->autotrade();
         $newuserinfo=$OKTOOL->get_new_info('userinfo');
         $newticker=$OKTOOL->get_new_info('ticker');
         $newset=$OKTOOL->get_new_info('set');
@@ -46,7 +42,6 @@ class HomeController extends Controller
         $login_user=$request->user();
         $login_user->autotrade=true;
         $login_user->save();
-        $res=$this->autotrade($login_user);
     }
     public function stoptrade(Request $request){
         $login_user=$request->user();
@@ -64,8 +59,6 @@ class HomeController extends Controller
     public function autotrade($user){
         //检测是否设置api_key
         try{
-            if($user->autotrade)
-            {
                 if ($user->api_key!=null&&$user->secret_key!=null)
                 {
                     $OKTOOL=new OKTOOL($user);
@@ -77,7 +70,6 @@ class HomeController extends Controller
                     return false;
                     var_dump('请设置你的api_key和secret_key!');
                 }
-            }
         }
         catch(exception $e){
             //修改设置

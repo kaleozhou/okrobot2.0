@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Console;
-
+use Log;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-
+use App\User;
+use App\Libraries\OKTOOL;
 class Kernel extends ConsoleKernel
 {
     /**
@@ -26,6 +27,36 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->call(function()
+        {
+            $users=User::where('autotrade',true)->get();
+            for ($i = 0; $i < 8; $i++) {
+                foreach ($users as $user) {
+                    try{
+                        if ($user->api_key!=null&&$user->secret_key!=null)
+                        {
+                            $OKTOOL=new OKTOOL($user);
+                            $res=$OKTOOL->update_data_database();
+                            $res=$OKTOOL->autotrade();
+                            $newuserinfo=$OKTOOL->get_new_info('userinfo');
+                            Log::info('user_id: '.$newuserinfo->user_id.' asset_net: '.$newuserinfo->asset_net.' asset_total: '.$newuserinfo->asset_total);
+                        }
+                        else
+                        {
+                            return false;
+                            Log::info('请设置你的api_key和secret_key!');
+                        }
+                    }
+                    catch(exception $e){
+                        //修改设置
+                        $user->autotrade=false;
+                        $user->save();
+                        return false;
+                    }
+                }
+                sleep(5);
+            }
+        })->everyMinute();
     }
 
     /**
