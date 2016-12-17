@@ -11,7 +11,15 @@ label{}
 .red{color:red}
 .green{color:green}
 </style>
-<meta http-equiv="refresh" content="1">
+<script language="JavaScript">
+function myrefresh()
+{
+   window.location.reload();
+
+}
+setTimeout('myrefresh()',1000); //指定1秒刷新一次
+</script>
+<!--<meta http-equiv="refresh" content="1">-->
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">

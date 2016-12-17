@@ -95,5 +95,8 @@ class HomeController extends Controller
             ->simplePaginate(5);
         return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error]);
     }
+    public function userhome(){
+        return view('userhome');
+    }
 
 }
