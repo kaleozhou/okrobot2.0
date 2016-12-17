@@ -43,7 +43,6 @@ class Kernel extends ConsoleKernel
                         }
                         else
                         {
-                            return false;
                             Log::info('name: '.$user->name.' 请设置你的api_key和secret_key!');
                         }
                     }
@@ -51,7 +50,6 @@ class Kernel extends ConsoleKernel
                         //修改设置
                         $user->autotrade=false;
                         $user->save();
-                        return false;
                     }
                 }
                 sleep(5);
