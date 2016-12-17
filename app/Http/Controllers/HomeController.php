@@ -29,6 +29,7 @@ class HomeController extends Controller
         //$login_user->api_key=config('okcoin.api_key');
         //$login_user->secret_key=config('okcoin.secret_key');
         //$login_user->save();
+        $OKTOOL=new OKTOOL($user);
         $newuserinfo=$OKTOOL->get_new_info('userinfo');
         $newticker=$OKTOOL->get_new_info('ticker');
         $newset=$OKTOOL->get_new_info('set');
