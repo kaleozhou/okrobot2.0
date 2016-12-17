@@ -61,15 +61,7 @@ class HomeController extends Controller
             $login_user->autotrade=true;
             $login_user->save();
         }
-        $OKTOOL=new OKTOOL($login_user);
-        $newuserinfo=$OKTOOL->get_new_info('userinfo');
-        $newticker=$OKTOOL->get_new_info('ticker');
-        $newset=$OKTOOL->get_new_info('set');
-        $orderinfos=Orderinfo::where('status','2')
-            ->where('user_id',$login_user->id)
-            ->orderBy('order_id','desc')
-            ->simplePaginate(5);
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error]);
+        return redirect('home');
     }
     /**
      * 设置关闭自动交易
@@ -85,18 +77,7 @@ class HomeController extends Controller
         $login_user=$request->user();
         $login_user->autotrade=false;
         $login_user->save();
-        $OKTOOL=new OKTOOL($login_user);
-        $newuserinfo=$OKTOOL->get_new_info('userinfo');
-        $newticker=$OKTOOL->get_new_info('ticker');
-        $newset=$OKTOOL->get_new_info('set');
-        $orderinfos=Orderinfo::where('status','2')
-            ->where('user_id',$login_user->id)
-            ->orderBy('order_id','desc')
-            ->simplePaginate(5);
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error]);
-    }
-    public function userhome(){
-        return view('userhome');
+        return redirect('home');
     }
 
 }
