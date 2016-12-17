@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Console;
 use Log;
 use Illuminate\Console\Scheduling\Schedule;
@@ -16,7 +15,6 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //
     ];
-
     /**
      * Define the application's command schedule.
      *
@@ -30,33 +28,38 @@ class Kernel extends ConsoleKernel
         $schedule->call(function()
         {
             $users=User::where('autotrade',true)->get();
-            for ($i = 0; $i < 4; $i++) {
-                foreach ($users as $user) {
-                    try{
-                        if ($user->api_key!=null&&$user->secret_key!=null)
-                        {
-                            $OKTOOL=new OKTOOL($user);
-                            $res=$OKTOOL->update_data_database();
-                            $res=$OKTOOL->autotrade();
-                            $newuserinfo=$OKTOOL->get_new_info('userinfo');
-                            Log::info('name: '.$user->name.' asset_net: '.$newuserinfo->asset_net.' asset_total: '.$newuserinfo->asset_total);
+            if (count($users)<1) {
+                Log::info('没有用户自动交易');
+            }
+            else
+            {
+                for ($i = 0; $i <= 8/count($users); $i++) {
+                    foreach ($users as $user) {
+                        try{
+                            if ($user->api_key!=null&&$user->secret_key!=null)
+                            {
+                                $OKTOOL=new OKTOOL($user);
+                                $res=$OKTOOL->update_data_database();
+                                $res=$OKTOOL->autotrade();
+                                $newuserinfo=$OKTOOL->get_new_info('userinfo');
+                                Log::info('name: '.$user->name.' asset_net: '.$newuserinfo->asset_net.' asset_total: '.$newuserinfo->asset_total);
+                            }
+                            else
+                            {
+                                Log::info('name: '.$user->name.' 请设置你的api_key和secret_key!');
+                            }
                         }
-                        else
-                        {
-                            Log::info('name: '.$user->name.' 请设置你的api_key和secret_key!');
+                        catch(exception $e){
+                            //修改设置
+                            $user->autotrade=false;
+                            $user->save();
                         }
                     }
-                    catch(exception $e){
-                        //修改设置
-                        $user->autotrade=false;
-                        $user->save();
-                    }
+                    sleep(5);
                 }
-                sleep(5);
             }
         })->everyMinute();
     }
-
     /**
      * Register the Closure based commands for the application.
      *
