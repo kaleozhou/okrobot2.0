@@ -26,6 +26,11 @@ label{}
                     @endif
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <a href='/starttrade'>开始交易</a>
+                    @if ($error!=false)
+                    <label class='red'>
+                    {{$error}}
+                    </label>
+                    @endif
                     <a href='/stoptrade'>停止交易</a>
                 </div>
                 <div class="panel-body">

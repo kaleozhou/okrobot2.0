@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Notifications\InvoicePaid;
 class HomeController extends Controller
 {
+    public $error;
     /**
      * Create a new controller instance.
      *
@@ -17,6 +18,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->error=false;
     }
     /**
      * Show the application dashboard.
@@ -25,6 +27,9 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user()->api_key==null||$request->user()->secret_key==null) {
+        $this->error='请设置您的api_key和secret_key';
+        }
         //$login_user->api_key=config('okcoin.api_key');
         //$login_user->secret_key=config('okcoin.secret_key');
         //$login_user->save();
@@ -37,7 +42,7 @@ class HomeController extends Controller
             ->where('user_id',$login_user->id)
             ->orderBy('order_id','desc')
             ->simplePaginate(5);
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user]);
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error]);
     }
     public function starttrade(Request $request){
         $login_user=$request->user();
@@ -54,7 +59,7 @@ class HomeController extends Controller
             ->where('user_id',$login_user->id)
             ->orderBy('order_id','desc')
             ->simplePaginate(5);
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user]);
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error]);
     }
     public function stoptrade(Request $request){
         $login_user=$request->user();
@@ -68,7 +73,7 @@ class HomeController extends Controller
             ->where('user_id',$login_user->id)
             ->orderBy('order_id','desc')
             ->simplePaginate(5);
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user]);
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error]);
     }
 
     /**
