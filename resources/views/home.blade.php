@@ -32,6 +32,11 @@ label{}
                     {{$error}}
                     </label>
                     @endif
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    @if ($userinfo!=null)
+                    <label>更新时间</label>
+                    <label>{{$userinfo->updated_at}}</label>
+                    @endif
                 </div>
                 <div class="panel-body">
 <h4>账户信息</h4>
