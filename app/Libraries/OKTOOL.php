@@ -154,7 +154,7 @@ class OKTOOL{
             $neworderinfo=$this->get_new_info('orderinfo');
             $set->my_last_price=$neworderinfo->avg_price;
             //根据kline计算价值波数值20条信息
-            $n_price=Kline::where('user_id',$this->user_id)->orderBy('id','desc')->avg('dif_price');
+            $n_price=Kline::where('user_id',$this->user_id)->orderBy('id','desc')->take(100)->avg('dif_price');
             $set->user_id=$this->user_id;
             $set->n_price=$n_price;
             //暂为使用
