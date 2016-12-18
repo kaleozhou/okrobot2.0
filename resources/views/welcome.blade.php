@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>OKROBOT</title>
 
         <!-- Fonts 
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -79,12 +79,10 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    KALEOBTC自动交易策略平台
+                    OKROBOT策略平台
                 </div>
 
                 <div class="links">
-                    <a href="/home">OKCoin 自动交易机器人</a>
-                    <a href="/">策略</a>
                 </div>
             </div>
         </div>
