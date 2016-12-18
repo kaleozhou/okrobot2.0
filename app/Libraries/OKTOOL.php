@@ -131,7 +131,7 @@ class OKTOOL{
         case 'kline':
             //获取比特币5分钟k线图数据20条
             $type=config('okcoin.klinetype');
-            $params = array('symbol' => 'btc_cny', 'type' =>$type, 'size' => 20);
+            $params = array('symbol' => 'btc_cny', 'type' =>$type, 'size' => 100);
             $result = $this->client->klineDataApi($params);
             foreach ($result as $reskline) {
                 //取出每个kline
