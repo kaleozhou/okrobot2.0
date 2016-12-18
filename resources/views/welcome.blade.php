@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -6,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>OKROBOT</title>
-
+</script>
         <!-- Fonts 
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 -->
@@ -81,9 +82,10 @@
                 <div class="title m-b-md">
                     OKROBOT策略平台
                 </div>
-
-                <div class="links">
-                </div>
+ <div id="app">
+{{msg}}
+</div>
+<script src="/js/app.js"></script>
             </div>
         </div>
     </body>
