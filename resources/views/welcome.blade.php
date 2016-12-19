@@ -65,6 +65,7 @@
             }
         </style>
     </head>
+                <script src="/js/app.js"></script>
     <body>
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
@@ -79,13 +80,9 @@
             @endif
 
             <div class="content">
-                <div class="title m-b-md">
+                <div  class="title m-b-md">
                     OKROBOT策略平台
                 </div>
- <div id="app">
-{{msg}}
-</div>
-<script src="/js/app.js"></script>
             </div>
         </div>
     </body>

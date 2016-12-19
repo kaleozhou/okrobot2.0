@@ -15,12 +15,12 @@ require('./bootstrap');
 
 Vue.component('example', require('./components/Example.vue'));
 
-new Vue({
+const app=new Vue({
     el: '#app',
-    data: { 
-        msg:'nihao'
-
+    data:{
+        kaleo:"myname!"
     }
+
 });
 Vue.component(
 'passport-clients',
