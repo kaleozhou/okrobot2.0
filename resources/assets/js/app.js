@@ -14,13 +14,13 @@ require('./bootstrap');
  */
 
 Vue.component('example', require('./components/Example.vue'));
-
 const app=new Vue({
     el: '#app',
-    data:{
-        kaleo:"myname!"
-    }
-
+        data:{
+            tradestatus:'交易状态',
+            running:'运行中',
+            stoped:'已停止'
+        }
 });
 Vue.component(
 'passport-clients',
