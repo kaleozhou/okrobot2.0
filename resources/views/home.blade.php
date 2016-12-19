@@ -19,8 +19,6 @@ function myrefresh()
 }
 setTimeout('myrefresh()',3000); //指定1秒刷新一次
 </script>
-
-<example></example>
 <!--<meta http-equiv="refresh" content="1">-->
 <div class="container">
     <div class="row">
