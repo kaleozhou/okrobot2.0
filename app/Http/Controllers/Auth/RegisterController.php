@@ -70,13 +70,7 @@ class RegisterController extends Controller
         $user->password=bcrypt($data['password']);
         $user->api_key=$data['api_key'];
         $user->secret_key=$data['secret_key'];
-        return $user->save();
-        // return User::create([
-        //     'name' => $data['name'],
-        //     'email' => $data['email'],
-        //     'password' => bcrypt($data['password']),
-        //     'api_key' => $data['api_key'],
-        //     'secret_key' => $data['secret_key']
-        // ]);
+        $user->save();
+        return $user;
     }
 }
