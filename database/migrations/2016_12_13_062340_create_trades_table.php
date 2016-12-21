@@ -20,6 +20,7 @@ class CreateTradesTable extends Migration
             $table->string('tradetype');
             $table->decimal('price',15,4)->nullable();
             $table->decimal('amount',15,4)->nullable();
+            $table->decimal('asset_net',15,4)->nullable();
             $table->boolean('result');
             $table->string('order_id')->nullable();
             $table->timestamps();

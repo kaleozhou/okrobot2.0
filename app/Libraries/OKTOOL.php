@@ -285,7 +285,7 @@ class OKTOOL{
         $newsms->save();
     }
     //下单
-    public function totrade($tradetype,$value,$last_trade_type,$last_trade_hits){
+    public function totrade($tradetype,$value,$last_trade_type,$last_trade_hits,$asset_net){
         //创建订单
         $trade=new Trade();
         //创建趋势
@@ -314,6 +314,7 @@ class OKTOOL{
         $trend->user_id=$this->user_id;
         $trend->last_trade_hits=$last_trade_hits;
         $trend->last_trade_type=$last_trade_type;
+        $trend->asset_net=$asset_net;
         $trend->create_date =date("Y/m/d H:i:s");
         $trend->save(); 
     }
@@ -386,14 +387,14 @@ class OKTOOL{
                         }
                         if($price>=60&&$price<=$free_cny)
                         {
-                            $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
+                            $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
                         }
                         else
                         {
                             //卖出0.01btc比更新价格
                             $amount=0.01;
                             $tradetype='sell_market';
-                            $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
+                            $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
                             $this->send_sms('已经锁定利润！');
                         }
                     }
@@ -416,14 +417,14 @@ class OKTOOL{
                             $last_trade_type='down_1';
                             if ($amount>0.01) {
                                 $tradetype='sell_market';
-                                $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
+                                $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
                             }
                             else
                             {
                                 //卖完了
                                 $price=60;
                                 $tradetype='buy_market';
-                                $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
+                                $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
                             }
                     }
                 }
@@ -436,7 +437,7 @@ class OKTOOL{
                 if ($amount>0.01) {
                     $last_trade_hits++;
                     $tradetype='sell_market';
-                    $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits);
+                    $res=$this->totrade($tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
                 }
                 else
                 {
@@ -445,7 +446,7 @@ class OKTOOL{
                     $price=60;
                     $tradetype='buy_market';
                     $last_trade_hits++;
-                    $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits);
+                    $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
                 }
                 //停止工作
                 $autoresult_order_id='upline';
