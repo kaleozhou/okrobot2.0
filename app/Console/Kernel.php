@@ -55,7 +55,7 @@ class Kernel extends ConsoleKernel
                         }
                     }
             }
-        })->everyFiveMinutes();
+        })->everyThirtyMinutes();
         $schedule->call(function()
         {
             $users=User::where('autotrade',true)->get();
@@ -72,7 +72,7 @@ class Kernel extends ConsoleKernel
                                 $OKTOOL=new OKTOOL($user);
                                 $res=$OKTOOL->update_data_database();
                                 $newuserinfo=$OKTOOL->get_new_info('userinfo');
-                                Log::info('name: '.$user->name.'更新');
+//                                Log::info('name: '.$user->name.'更新');
                             }
                             else
                             {
