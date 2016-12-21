@@ -309,12 +309,12 @@ class OKTOOL{
         $trade->symbol=$symbol;
         $trade->tradetype=$tradetype;
         $trade->result=$result->result;
+        $trade->asset_net=$asset_net;
         $trade->save();
         //插入trend的
         $trend->user_id=$this->user_id;
         $trend->last_trade_hits=$last_trade_hits;
         $trend->last_trade_type=$last_trade_type;
-        $trend->asset_net=$asset_net;
         $trend->create_date =date("Y/m/d H:i:s");
         $trend->save(); 
     }
