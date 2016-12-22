@@ -12,7 +12,7 @@ return[
 'downline'=>3500,//初始化止损值
 'upline'=>10000,//止盈值
 'uprate'=>0.5,//上浮率
-'downrate'=>1,//下浮动率
+'downrate'=>0.5,//下浮动率
 'unit'=>0.33,//下单单位
 'unitrate'=>0.5,//买入，卖出对价值波动的比率
 'klinetype'=>"15min",//kline的周期
