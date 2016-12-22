@@ -55,7 +55,8 @@ class Kernel extends ConsoleKernel
                         }
                     }
             }
-        })->everyThirtyMinutes();
+        //})->everyThirtyMinutes();
+        })->everyTenMinutes();
         $schedule->call(function()
         {
             $users=User::where('autotrade',true)->get();
