@@ -32,7 +32,7 @@
                         @if ($userinfo!=null)
                         <tr>
                             <td>余额：</td>
-                            <td>{{$userinfo->asset_net}}</td>
+                            <td>{{$userinfo->asset_net-2000}}</td>
                             <td>总额：</td>
                             <td>{{$userinfo->asset_total}}</td>
                             <td>可用人民币：</td>
