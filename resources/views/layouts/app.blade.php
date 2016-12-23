@@ -22,7 +22,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-default navbar-static-top">
+        <nav class="navbar navbar-primary navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
 
@@ -60,10 +60,16 @@
 
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
+                                        <a href="{{url('/home')}}">个人中心</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{url('/modifyUserinfo')}}">修改信息</a>
+                                    </li>
+                                    <li>
                                         <a href="{{ url('/logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                            Logout
+                                            退出
                                         </a>
 
                                         <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">

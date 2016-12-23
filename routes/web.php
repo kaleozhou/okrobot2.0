@@ -9,7 +9,7 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,5 +18,9 @@ Auth::routes();
 Route::get('/home', 'HomeController@index');
 Route::get('/starttrade', 'HomeController@starttrade');
 Route::get('/stoptrade', 'HomeController@stoptrade');
+//修改信息
+Route::get('/modifyUserinfo', 'UserController@index');
+Route::post('/modifyUserinfo', 'UserController@modify');
+
 
 
