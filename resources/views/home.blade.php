@@ -32,10 +32,6 @@ var ok = 'niahia';
                     <span>{{$userinfo->updated_at}}</span> 
                     </div>
                     @endif
-                    <div style="height:50px;width:40%;">
-                    <a class="btn btn-success"href='/starttrade'>开始交易</a>
-                    <a class="btn btn-danger"href='/stoptrade'>停止交易</a> 
-                    </div>
                     @if ($error!=false)
                     <label>
                         {{$error}}
@@ -87,7 +83,12 @@ var ok = 'niahia';
                             <tr>
                                 @endforeach
                     </table>
-                    {{$orderinfos->links()}} @endif
+                    {{$orderinfos->links()}} 
+                    @endif
+                    <div style="height:50px;width:40%;">
+                    <a class="btn btn-success"href='/starttrade'>开始交易</a>
+                    <a class="btn btn-danger"href='/stoptrade'>停止交易</a> 
+                    </div>
                 </div>
             </div>
         </div>
