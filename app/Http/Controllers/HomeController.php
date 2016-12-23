@@ -42,7 +42,16 @@ class HomeController extends Controller
             ->where('user_id',$login_user->id)
             ->orderBy('order_id','desc')
             ->simplePaginate(5);
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error]);
+        //计算利润
+        if($login_user->cost>0&&!empty($newuserinfo))
+        {
+            $profit=($newuserinfo->asset_net-$login_user->cost)/$login_user->cost;
+        }
+        else
+        {
+            $profit=0;
+        }
+        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error,'profit'=>$profit]);
     }
     /**
      *设置开始自动交易

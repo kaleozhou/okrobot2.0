@@ -21,6 +21,7 @@ class UserController extends Controller
         $user=$request->user();
         $user->api_key=$data['api_key'];
         $user->secret_key=$data['secret_key'];
+        $user->cost=$data['cost'];
         $user->save(); 
         return view('modifyUserinfo',['user'=>$user]);
     }

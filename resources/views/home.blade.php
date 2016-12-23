@@ -1,11 +1,11 @@
 @extends('layouts.app') @section('content')
 <script language="JavaScript">
-    function myrefresh() {
-        window.location.reload();
+function myrefresh() {
+    window.location.reload();
 
-    }
-    setTimeout('myrefresh()', 3000); //指定1秒刷新一次
-    var ok = 'niahia';
+}
+setTimeout('myrefresh()', 3000); //指定1秒刷新一次
+var ok = 'niahia';
 
 </script>
 <!--<meta http-equiv="refresh" content="1">-->
@@ -15,16 +15,31 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <label class="lead">控制面板</label><br>
-                    <label class="lead"> 交易状态：</label> @if ($user->autotrade=='1')
-                    <span class="label label-success lead">运行中</span> @else
-                    <span class="label label-danger lead">已停止</span> @endif &nbsp;&nbsp;&nbsp;&nbsp;
+                    @if ($user->autotrade=='1')
+                    <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-success ">运行中</span></div>
+                    @else
+                    <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-danger ">已停止</span></div>
+                    @endif 
+                    @if ($profit>0)
+                    <div style="font-size:21px;width:30%;float:left">净利润:
+                        <span class="label label-success lead">{{round($profit,2)}}%</span></div>
+                    @else
+                    <div style="font-size:21px;width:30%;float:left">净利润:
+                        <span class="label label-warning lead">{{round($profit,2)}}</span></div>
+                    @endif
+                    @if ($userinfo!=null)
+                    <div style="font-size:21px;width:40%;float:left">更新时间:
+                    <span>{{$userinfo->updated_at}}</span> 
+                    </div>
+                    @endif
+                    <div style="height:50px;width:40%;">
                     <a class="btn btn-success"href='/starttrade'>开始交易</a>
-                    <a class="btn btn-danger"href='/stoptrade'>停止交易</a> @if ($error!=false)
+                    <a class="btn btn-danger"href='/stoptrade'>停止交易</a> 
+                    </div>
+                    @if ($error!=false)
                     <label>
-                    {{$error}}
-                    </label> @endif &nbsp;&nbsp;&nbsp;&nbsp; @if ($userinfo!=null)
-                    <label>更新时间</label>
-                    <label>{{$userinfo->updated_at}}</label> @endif
+                        {{$error}}
+                    </label> @endif &nbsp;&nbsp;&nbsp;&nbsp; 
                 </div>
                 <div class="panel-body">
                     <h4>账户信息</h4>

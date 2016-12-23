@@ -32,6 +32,17 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="form-group{{ $errors->has('cost') ? ' has-error' : '' }}">
+                            <label for="cost" class="col-md-4 control-label">成本</label>
+                            <div class="col-md-6">
+                                <input id="cost" type="text" class="form-control" name="cost" value="{{$user->cost}}" required>
+                            </div>
+                            @if ($errors->has('api_key'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('api_key') }}</strong>
+                            </span>
+                            @endif
+                        </div>
                         <div class="form-group{{ $errors->has('api_key') ? ' has-error' : '' }}">
                             <label for="api_key" class="col-md-4 control-label">APIKEY</label>
                             <div class="col-md-6">
