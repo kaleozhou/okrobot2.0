@@ -4,8 +4,7 @@ function myrefresh() {
     window.location.reload();
 
 }
-setTimeout('myrefresh()', 3000); //指定1秒刷新一次
-var ok = 'niahia';
+setTimeout('myrefresh()', 5000); //指定1秒刷新一次
 
 </script>
 <!--<meta http-equiv="refresh" content="1">-->
