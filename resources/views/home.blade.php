@@ -14,7 +14,12 @@ var ok = 'niahia';
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <label class="lead">控制面板</label><br>
+                    <label class="lead">控制面板</label>
+                    <div style="height:50px;width:25%;float:right">
+                    <a class="btn btn-success"href='/starttrade'>开始交易</a>
+                    <a class="btn btn-danger"href='/stoptrade'>停止交易</a> 
+                    </div>
+                    <br>
                     @if ($user->autotrade=='1')
                     <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-success ">运行中</span></div>
                     @else
@@ -51,7 +56,8 @@ var ok = 'niahia';
                             <td>可用BTC：</td>
                             <td>{{$userinfo->free_btc}}</td>
                         </tr>
-                        @endif @if ($ticker!=null&&$set!=null)
+                        @endif
+                        @if ($ticker!=null&&$set!=null)
                         <tr>
                             <td>价格：</td>
                             <td>{{$ticker->last_price}}</td>
@@ -66,7 +72,8 @@ var ok = 'niahia';
                     </table>
                     <h4>我的订单</h4>
                     <table class="table table-bordered">
-                        @if ($orderinfos!=null) @foreach ($orderinfos as $orderinfo)
+                    @if ($orderinfos!=null)
+                    @foreach ($orderinfos as $orderinfo)
                         <tr>
                             <td>成交价格</td>
                             <td>{{$orderinfo->avg_price}}</td>
@@ -85,10 +92,6 @@ var ok = 'niahia';
                     </table>
                     {{$orderinfos->links()}} 
                     @endif
-                    <div style="height:50px;width:40%;">
-                    <a class="btn btn-success"href='/starttrade'>开始交易</a>
-                    <a class="btn btn-danger"href='/stoptrade'>停止交易</a> 
-                    </div>
                 </div>
             </div>
         </div>
