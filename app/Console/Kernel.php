@@ -33,27 +33,22 @@ class Kernel extends ConsoleKernel
             $this->autotrade('dotrade','ltc_cny');
             //})->everyThirtyMinutes();
             // })->everyTenMinutes();
-        //})->everyFiveMinutes();
+            //})->everyFiveMinutes();
         })->everyMinute();
         //更更新数据
         $schedule->call(function()
         {
             //自动更新btc
-            $this->autotrade('dotrade','btc_cny');
+            $this->autotrade('update','btc_cny');
         })->everyMinute();
     }
     public function autotrade($operate,$symbol){
-        if ($symbol=='btc_cny') {
-            $users=User::where('btc_autotrade',true)->get();
-        }
-        else {
-            $users=User::where('ltc_autotrade',true)->get();
-        }
+        $users=User::all();
         switch ($operate) {
         case 'update':
             //更新数据
             if (count($users)<1) {
-//                Log::info('没有用户自动交易');
+                //                Log::info('没有用户自动交易');
             }
             else
             {
@@ -85,7 +80,7 @@ class Kernel extends ConsoleKernel
         case 'dotrade':
             //自动交易
             if (count($users)<1) {
- //               Log::info($symbol.'-没有用户自动交易');
+                //               Log::info($symbol.'-没有用户自动交易');
             }
             else
             {
