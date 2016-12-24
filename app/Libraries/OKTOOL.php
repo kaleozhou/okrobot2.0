@@ -326,6 +326,8 @@ class OKTOOL{
             if($newticker!=null){
                 $last_price=$newticker->last_price;
                 $dif=$newticker->dif_price;
+                //最小购买金额计算
+                $smallprice=$last_price/99;
             }
             //获取趋势
             $newtrend=$this->get_new_info('trend');
@@ -385,7 +387,7 @@ class OKTOOL{
                         {
                             $price=$free_cny;
                         }
-                        if($price>=60&&$price<=$free_cny)
+                        if($price>=$smallprice&&$price<=$free_cny)
                         {
                             $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
                         }
@@ -422,7 +424,7 @@ class OKTOOL{
                             else
                             {
                                 //卖完了
-                                $price=60;
+                                $price=$smallprice;
                                 $tradetype='buy_market';
                                 $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
                             }
@@ -443,7 +445,7 @@ class OKTOOL{
                 {
                     //卖完了
                     //判断是否是连击
-                    $price=60;
+                    $price=$smallprice;
                     $tradetype='buy_market';
                     $last_trade_hits++;
                     $res=$this->totrade($tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
