@@ -15,12 +15,12 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                 <div class="panel-heading">
                     <label class="lead">控制面板</label>
                     <div style="height:50px;width:25%;float:right">
-                    <a class="btn btn-success"href='/starttrade/btc_cny'>BTC开始</a>
-                    <a class="btn btn-danger"href='/stoptrade/btc_cny'>BTC停止</a> 
-                    </div>
-                    <div style="height:50px;width:25%;float:right">
                     <a class="btn btn-success"href='/starttrade/ltc_cny'>LTC开始</a>
                     <a class="btn btn-danger"href='/stoptrade/ltc_cny'>LTC停止</a> 
+                    </div>
+                    <div style="height:50px;width:25%;float:right">
+                    <a class="btn btn-success"href='/starttrade/btc_cny'>BTC开始</a>
+                    <a class="btn btn-danger"href='/stoptrade/btc_cny'>BTC停止</a> 
                     </div>
                     </br>
                     @if ($user->btc_autotrade=='1')
