@@ -11,7 +11,7 @@ return[
 'secret_key'=> "461D47D0FE52B28288E1285D8D899812",
 'downline'=>6000,//初始化止损值
 'upline'=>100000,//止盈值
-'uprate'=>1,//上浮率
+'uprate'=>0.75,//上浮率
 'downrate'=>1,//下浮动率
 'unit'=>0.33,//下单单位
 'unitrate'=>0.5,//买入，卖出对价值波动的比率
