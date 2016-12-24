@@ -23,6 +23,13 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                     <a class="btn btn-danger"href='/stoptrade/btc_cny'>BTC停止</a> 
                     </div>
                     </br>
+                    @if ($profit>0)
+                    <div style="font-size:21px;width:30%;float:left">净利润:
+                        <span class="label label-success lead">{{round($profit,2)}}%</span></div>
+                    @else
+                    <div style="font-size:21px;width:30%;float:left">净利润:
+                        <span class="label label-warning lead">{{round($profit,2)}}</span></div>
+                    @endif
                     @if ($user->btc_autotrade=='1')
                     <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-success ">BTC运行中</span></div>
                     @else
@@ -33,13 +40,6 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                     @else
                     <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-danger ">LTC已停止</span></div>
                     @endif 
-                    @if ($profit>0)
-                    <div style="font-size:21px;width:30%;float:left">净利润:
-                        <span class="label label-success lead">{{round($profit,2)}}%</span></div>
-                    @else
-                    <div style="font-size:21px;width:30%;float:left">净利润:
-                        <span class="label label-warning lead">{{round($profit,2)}}</span></div>
-                    @endif
                     @if ($userinfo!=null)
                     <div style="font-size:21px;width:40%;float:left">更新时间:
                     <span>{{$userinfo->updated_at}}</span> 
