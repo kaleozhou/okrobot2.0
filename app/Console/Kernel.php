@@ -43,9 +43,9 @@ class Kernel extends ConsoleKernel
         })->everyMinute();
     }
     public function autotrade($operate,$symbol){
-        $users=User::all();
         switch ($operate) {
         case 'update':
+            $users=User::all();
             //更新数据
             if (count($users)<1) {
                 //                Log::info('没有用户自动交易');
@@ -78,6 +78,18 @@ class Kernel extends ConsoleKernel
             }
             break;
         case 'dotrade':
+            switch ($symbol) {
+            case 'btc_cny':
+                $users=User::where('btc_autotrade',true)-get();
+                break;
+            case 'ltc_cny':
+                $users=User::where('ltc_autotrade',true)-get();
+                break;
+
+            default:
+                $users=User::where('btc_autotrade',true)-get();
+                break;
+            }
             //自动交易
             if (count($users)<1) {
                 //               Log::info($symbol.'-没有用户自动交易');
