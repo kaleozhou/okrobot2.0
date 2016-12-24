@@ -30,18 +30,18 @@ class HomeController extends Controller
         if ($request->user()->api_key==null||$request->user()->secret_key==null) {
             $this->error='请设置您的api_key和secret_key';
         }
-        //$login_user->api_key=config('okcoin.api_key');
-        //$login_user->secret_key=config('okcoin.secret_key');
-        //$login_user->save();
         $login_user=$request->user();
         $OKTOOL=new OKTOOL($login_user);
-        $newuserinfo=$OKTOOL->get_new_info('userinfo');
-        $newticker=$OKTOOL->get_new_info('ticker');
-        $newset=$OKTOOL->get_new_info('set');
+        $symbol='btc_cny';
+        $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
+        $btc_ticker=$OKTOOL->get_new_info('ticker',$symbol);
+        $newset=$OKTOOL->get_new_info('set',$symbol);
         $orderinfos=Orderinfo::where('status','2')
             ->where('user_id',$login_user->id)
-            ->orderBy('order_id','desc')
+            ->orderBy('create_date','desc')
             ->simplePaginate(5);
+        $symbol='ltc_cny';
+        $ltc_ticker=$OKTOOL->get_new_info('ticker',$symbol);
         //计算利润
         if($login_user->cost>0&&!empty($newuserinfo))
         {
@@ -51,7 +51,7 @@ class HomeController extends Controller
         {
             $profit=0;
         }
-        return view('home',['userinfo'=>$newuserinfo,'ticker'=>$newticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error,'profit'=>$profit]);
+        return view('home',['userinfo'=>$newuserinfo,'btc_ticker'=>$btc_ticker,'ltc_ticker'=>$ltc_ticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error,'profit'=>$profit]);
     }
     /**
      *设置开始自动交易
@@ -60,14 +60,26 @@ class HomeController extends Controller
      * @param
      * @return
      */
-    public function starttrade(Request $request){
+    public function startbtc(Request $request){
         if ($request->user()->api_key==null||$request->user()->secret_key==null) {
             $this->error='请设置您的api_key和secret_key';
         }
         $login_user=$request->user();
         if ($login_user->api_key!=null&&$login_user->secret_key!=null)
         {
-            $login_user->autotrade=true;
+            $login_user->btc_autotrade=true;
+            $login_user->save();
+        }
+        return redirect('home');
+    }
+    public function startltc(Request $request){
+        if ($request->user()->api_key==null||$request->user()->secret_key==null) {
+            $this->error='请设置您的api_key和secret_key';
+        }
+        $login_user=$request->user();
+        if ($login_user->api_key!=null&&$login_user->secret_key!=null)
+        {
+            $login_user->ltc_autotrade=true;
             $login_user->save();
         }
         return redirect('home');
@@ -79,12 +91,21 @@ class HomeController extends Controller
      * @param
      * @return
      */
-    public function stoptrade(Request $request){
+    public function stopbtc(Request $request){
         if ($request->user()->api_key==null||$request->user()->secret_key==null) {
             $this->error='请设置您的api_key和secret_key';
         }
         $login_user=$request->user();
-        $login_user->autotrade=false;
+        $login_user->btc_autotrade=false;
+        $login_user->save();
+        return redirect('home');
+    }
+    public function stopltc(Request $request){
+        if ($request->user()->api_key==null||$request->user()->secret_key==null) {
+            $this->error='请设置您的api_key和secret_key';
+        }
+        $login_user=$request->user();
+        $login_user->ltc_autotrade=false;
         $login_user->save();
         return redirect('home');
     }

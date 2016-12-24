@@ -16,8 +16,11 @@ Route::get('/', function () {
 });
 Auth::routes();
 Route::get('/home', 'HomeController@index');
-Route::get('/starttrade', 'HomeController@starttrade');
-Route::get('/stoptrade', 'HomeController@stoptrade');
+//停止自动交易
+Route::get('/starttrade/btc_cny', 'HomeController@startbtc');
+Route::get('/starttrade/ltc_cny', 'HomeController@startltc');
+Route::get('/stoptrade/btc_cny', 'HomeController@stopbtc');
+Route::get('/stoptrade/ltc_cny', 'HomeController@stopltc');
 //修改信息
 Route::get('/modifyUserinfo', 'UserController@index');
 Route::post('/modifyUserinfo', 'UserController@modify');

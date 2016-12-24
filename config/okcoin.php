@@ -15,7 +15,7 @@ return[
 'downrate'=>1,//下浮动率
 'unit'=>0.33,//下单单位
 'unitrate'=>0.5,//买入，卖出对价值波动的比率
-'klinetype'=>"5min",//kline的周期
+'klinetype'=>"3min",//kline的周期
 'smsusername'=>"kaleozhou",//短信用户名
 'smspassword'=>"zh13275747670",//短信密码
 'smsphone'=>"13635456575"//短信手机号

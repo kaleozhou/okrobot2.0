@@ -15,16 +15,13 @@ class CreateTickersTable extends Migration
     {
         Schema::create('tickers', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->index();
+            $table->string('symbol')->default('btc');
             $table->decimal('buy',15,4);
             $table->decimal('high',15,4);
             $table->decimal('last_price',15,4);
             $table->decimal('low',15,4);
             $table->decimal('sell',15,4);
-            $table->decimal('base_rate',15,4);
-            $table->decimal('dif_price',15,4);
             $table->decimal('vol',15,4);
-            $table->datetime('tickerdate');
             $table->timestamps();
         });
     }

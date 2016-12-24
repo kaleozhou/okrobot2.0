@@ -18,10 +18,11 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->decimal('cost',15,8)->default(0);
+            $table->decimal('cost',15,4)->default(0);
             $table->string('api_key')->nullable();
             $table->string('secret_key')->nullable();
-            $table->boolean('autotrade')->default(false);
+            $table->boolean('btc_autotrade')->default(false);
+            $table->boolean('ltc_autotrade')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

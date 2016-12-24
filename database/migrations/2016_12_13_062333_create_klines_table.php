@@ -15,7 +15,6 @@ class CreateKlinesTable extends Migration
     {
         Schema::create('klines', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->index();
             $table->datetime('create_date');
             $table->decimal('start_price',15,4);
             $table->decimal('high_price',15,4);
@@ -23,6 +22,7 @@ class CreateKlinesTable extends Migration
             $table->decimal('over_price',15,4);
             $table->decimal('dif_price',15,4);
             $table->decimal('vol',15,4);
+            $table->string('symbol')->default('btc_cny');
             $table->timestamps();
         });
     }

@@ -15,14 +15,23 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                 <div class="panel-heading">
                     <label class="lead">控制面板</label>
                     <div style="height:50px;width:25%;float:right">
-                    <a class="btn btn-success"href='/starttrade'>开始交易</a>
-                    <a class="btn btn-danger"href='/stoptrade'>停止交易</a> 
+                    <a class="btn btn-success"href='/starttrade/btc_cny'>BTC开始</a>
+                    <a class="btn btn-danger"href='/stoptrade/btc_cny'>BTC停止</a> 
                     </div>
-                    <br>
-                    @if ($user->autotrade=='1')
-                    <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-success ">运行中</span></div>
+                    <div style="height:50px;width:25%;float:right">
+                    <a class="btn btn-success"href='/starttrade/ltc_cny'>LTC开始</a>
+                    <a class="btn btn-danger"href='/stoptrade/ltc_cny'>LTC停止</a> 
+                    </div>
+                    </br>
+                    @if ($user->btc_autotrade=='1')
+                    <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-success ">BTC运行中</span></div>
                     @else
-                    <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-danger ">已停止</span></div>
+                    <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-danger ">BTC已停止</span></div>
+                    @endif 
+                    @if ($user->ltc_autotrade=='1')
+                    <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-success ">LTC运行中</span></div>
+                    @else
+                    <div style="font-size:21px;width:30%;float:left">交易状态：<span class="label label-danger ">LTC已停止</span></div>
                     @endif 
                     @if ($profit>0)
                     <div style="font-size:21px;width:30%;float:left">净利润:
@@ -54,18 +63,36 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                             <td>{{$userinfo->free_cny}}</td>
                             <td>可用BTC：</td>
                             <td>{{$userinfo->free_btc}}</td>
+                            <td>可用LTC：</td>
+                            <td>{{$userinfo->free_ltc}}</td>
                         </tr>
                         @endif
-                        @if ($ticker!=null&&$set!=null)
+                        @if ($btc_ticker!=null&&$set!=null)
                         <tr>
-                            <td>价格：</td>
-                            <td>{{$ticker->last_price}}</td>
+                            <td>BTC价格：</td>
+                            <td>{{$btc_ticker->last_price}}</td>
                             <td>上次价格：</td>
-                            <td>{{$set->my_last_price}}</td>
+                            <td>{{$set->btc_my_last_price}}</td>
                             <td>价值波动：</td>
-                            <td>{{$set->n_price}}</td>
+                            <td>{{$set->btc_n_price}}</td>
                             <td>差价：</td>
-                            <td>{{$ticker->dif_price}}</td>
+                            <td>{{round($btc_ticker->last_price-$set->btc_my_last_price,2)}}</td>
+                            <td>偏差：</td>
+                            <td>{{$set->btc_n_price*$set->uprate}}</td>
+                        </tr>
+                        @endif
+                        @if ($ltc_ticker!=null&&$set!=null)
+                        <tr>
+                            <td>LTC价格：</td>
+                            <td>{{$ltc_ticker->last_price}}</td>
+                            <td>上次价格：</td>
+                            <td>{{$set->ltc_my_last_price}}</td>
+                            <td>价值波动：</td>
+                            <td>{{$set->ltc_n_price}}</td>
+                            <td>差价：</td>
+                            <td>{{round($ltc_ticker->last_price-$set->ltc_my_last_price,2)}}</td>
+                            <td>偏差：</td>
+                            <td>{{$set->ltc_n_price*$set->uprate}}</td>
                         </tr>
                         @endif
                     </table>
@@ -78,6 +105,8 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                             <td>{{$orderinfo->avg_price}}</td>
                             <td>成交量</td>
                             <td>{{$orderinfo->deal_amount}}</td>
+                            <td>类型</td>
+                            <td>{{$orderinfo->symbol}}</td>
                             <td>订单类型</td>
                             @if ($orderinfo->ordertype=='buy_market')
                             <td>买入</td>
@@ -89,7 +118,6 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                             <tr>
                                 @endforeach
                     </table>
-                    {{$orderinfos->links()}} 
                     @endif
                 </div>
             </div>

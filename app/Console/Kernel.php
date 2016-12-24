@@ -27,43 +27,33 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->call(function()
         {
-            $users=User::where('autotrade',true)->get();
-            if (count($users)<1) {
-                Log::info('没有用户自动交易');
-            }
-            else
-            {
-                    foreach ($users as $user) {
-                        try{
-                            if ($user->api_key!=null&&$user->secret_key!=null)
-                            {
-                                $OKTOOL=new OKTOOL($user);
-                                $res=$OKTOOL->update_data_database();
-                                $res=$OKTOOL->autotrade();
-                                $newuserinfo=$OKTOOL->get_new_info('userinfo');
-                                Log::info('name: '.$user->name.' asset_net: '.$newuserinfo->asset_net.' asset_total: '.$newuserinfo->asset_total);
-                            }
-                            else
-                            {
-                                Log::info('name: '.$user->name.' 请设置你的api_key和secret_key!');
-                            }
-                        }
-                        catch(exception $e){
-                            //修改设置
-                            $user->autotrade=false;
-                            $user->save();
-                        }
-                    }
-            }
-        //})->everyThirtyMinutes();
-       // })->everyTenMinutes();
-        })->everyFiveMinutes();
-        //更型数据
+            //自动交易btc
+            $this->autotrade('dotrade','btc_cny');
+            //自动交易ltc
+            $this->autotrade('dotrade','ltc_cny');
+            //})->everyThirtyMinutes();
+            // })->everyTenMinutes();
+        //})->everyFiveMinutes();
+        })->everyMinute();
+        //更更新数据
         $schedule->call(function()
         {
-            $users=User::where('autotrade',true)->get();
+            //自动更新btc
+            $this->autotrade('dotrade','btc_cny');
+        })->everyMinute();
+    }
+    public function autotrade($operate,$symbol){
+        if ($symbol=='btc_cny') {
+            $users=User::where('btc_autotrade',true)->get();
+        }
+        else {
+            $users=User::where('ltc_autotrade',true)->get();
+        }
+        switch ($operate) {
+        case 'update':
+            //更新数据
             if (count($users)<1) {
-                Log::info('没有用户自动交易');
+//                Log::info('没有用户自动交易');
             }
             else
             {
@@ -74,8 +64,7 @@ class Kernel extends ConsoleKernel
                             {
                                 $OKTOOL=new OKTOOL($user);
                                 $res=$OKTOOL->update_data_database();
-                                $newuserinfo=$OKTOOL->get_new_info('userinfo');
-//                                Log::info('name: '.$user->name.'更新');
+                                Log::info('name: '.$user->name.'已更新');
                             }
                             else
                             {
@@ -84,14 +73,49 @@ class Kernel extends ConsoleKernel
                         }
                         catch(exception $e){
                             //修改设置
-                            $user->autotrade=false;
+                            $user->btc_autotrade=false;
+                            $user->ltc_autotrade=false;
                             $user->save();
                         }
                         sleep(3);
                     }
                 }
             }
-        })->everyMinute();
+            break;
+        case 'dotrade':
+            //自动交易
+            if (count($users)<1) {
+ //               Log::info($symbol.'-没有用户自动交易');
+            }
+            else
+            {
+                foreach ($users as $user) {
+                    try{
+                        if ($user->api_key!=null&&$user->secret_key!=null)
+                        {
+                            $OKTOOL=new OKTOOL($user);
+                            $res=$OKTOOL->update_data_database();
+                            $res=$OKTOOL->autotrade($symbol);
+                            $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
+                            Log::info($symbol.'-name: '.$user->name.' asset_net: '.$newuserinfo->asset_net.' asset_total: '.$newuserinfo->asset_total);
+                        }
+                        else
+                        {
+                            Log::info('name: '.$user->name.' 请设置你的api_key和secret_key!');
+                        }
+                    }
+                    catch(exception $e){
+                        //修改设置
+                        $user->btc_autotrade=false;
+                        $user->ltc_autotrade=false;
+                        $user->save();
+                    }
+                }
+            }
+            break;
+        default:
+            break;
+        }
     }
     /**
      * Register the Closure based commands for the application.
