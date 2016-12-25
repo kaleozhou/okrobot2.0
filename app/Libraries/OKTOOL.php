@@ -581,6 +581,7 @@ class OKTOOL{
                     break;
                 }
                 $last_trade_type='down_1';
+                $last_trade_hits=1;
                 if ($amount>$amountunit) {
                     $last_trade_hits++;
                     $tradetype='sell_market';
