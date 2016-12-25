@@ -7,10 +7,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>OKROBOT</title>
-        <!-- Fonts 
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
--->
-        <!-- Styles -->
         <style>
             html, body {
                 background-color: #fff;
@@ -80,7 +76,7 @@
 
             <div class="content">
                 <div  class="title m-b-md">
-                    OKROBOT策略平台
+                    OKROBOT
                 </div>
             </div>
         </div>
