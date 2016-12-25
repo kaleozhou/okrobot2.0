@@ -47,12 +47,12 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         @endif 
                         @endif
                         <div class='col-xs-6 col-lg-6'>
-                            <a class="btn btn-success btc-mini"href='/starttrade/btc_cny'>BTC开始</a>
-                            <a class="btn btn-danger btc-mini"href='/stoptrade/btc_cny'>BTC停止</a> 
+                            <a class="btn btn-success btn-mini"href='/starttrade/btc_cny'>BTC开始</a>
+                            <a class="btn btn-danger btn-mini"href='/stoptrade/btc_cny'>BTC停止</a> 
                         </div>
                         <div class='col-xs-6 col-lg-6'>
-                            <a class="btn btn-success btc-mini"href='/starttrade/ltc_cny'>LTC开始</a>
-                            <a class="btn btn-danger btc-mini"href='/stoptrade/ltc_cny'>LTC停止</a> 
+                            <a class="btn btn-success btn-mini"href='/starttrade/ltc_cny'>LTC开始</a>
+                            <a class="btn btn-danger btn-mini"href='/stoptrade/ltc_cny'>LTC停止</a> 
                         </div>
                         @if ($error!=false)
                         <div class='col-xs-12'>
