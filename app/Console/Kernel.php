@@ -33,8 +33,8 @@ class Kernel extends ConsoleKernel
             $this->autotrade('dotrade','ltc_cny');
             //})->everyThirtyMinutes();
             // })->everyTenMinutes();
-            //})->everyFiveMinutes();
-        })->everyMinute();
+            })->everyFiveMinutes();
+       // })->everyMinute();
         //更更新数据
         $schedule->call(function()
         {
