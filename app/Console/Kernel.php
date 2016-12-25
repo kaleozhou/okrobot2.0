@@ -59,8 +59,8 @@ class Kernel extends ConsoleKernel
                             {
                                 $OKTOOL=new OKTOOL($user);
                                 $res=$OKTOOL->update_data_database();
-                            $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
-                                Log::info('name: '.$user->name.'已更新'.'cost'.$user->cost.'asset_net'.$newuserinfo->asset_net);
+                                $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
+                                //                                Log::info('name: '.$user->name.'已更新'.'cost'.$user->cost.'asset_net'.$newuserinfo->asset_net);
                             }
                             else
                             {
