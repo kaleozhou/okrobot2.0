@@ -56,7 +56,7 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         @if ($userinfo!=null)
                         <tr>
                             <td>余额：</td>
-                            <td>{{$userinfo->asset_net-2000}}</td>
+                            <td>{{$userinfo->asset_net}}</td>
                             <td>总额：</td>
                             <td>{{$userinfo->asset_total}}</td>
                             <td>可用资金：</td>

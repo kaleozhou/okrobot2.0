@@ -59,7 +59,8 @@ class Kernel extends ConsoleKernel
                             {
                                 $OKTOOL=new OKTOOL($user);
                                 $res=$OKTOOL->update_data_database();
-                                Log::info('name: '.$user->name.'已更新');
+                            $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
+                                Log::info('name: '.$user->name.'已更新'.'cost'.$user->cost.'asset_net'.$newuserinfo->asset_net);
                             }
                             else
                             {
@@ -80,14 +81,14 @@ class Kernel extends ConsoleKernel
         case 'dotrade':
             switch ($symbol) {
             case 'btc_cny':
-                $users=User::where('btc_autotrade',true)-get();
+                $users=User::where('btc_autotrade',true)->get();
                 break;
             case 'ltc_cny':
-                $users=User::where('ltc_autotrade',true)-get();
+                $users=User::where('ltc_autotrade',true)->get();
                 break;
 
             default:
-                $users=User::where('btc_autotrade',true)-get();
+                $users=User::where('btc_autotrade',true)->get();
                 break;
             }
             //自动交易

@@ -53,9 +53,16 @@ class OKTOOL{
                 $userinfo->user_id=$this->user_id;
                 $userinfo->asset_net=$result->info->funds->asset->net;
                 $userinfo->asset_total=$result->info->funds->asset->total;
+                $userinfo->borrow_btc=0;
+                $userinfo->borrow_cny=0;
+                $userinfo->borrow_ltc=0;
+                if(!empty($result->info->funds->borrow))
+                {
+                
                 $userinfo->borrow_btc=$result->info->funds->borrow->btc;
                 $userinfo->borrow_cny=$result->info->funds->borrow->cny;
                 $userinfo->borrow_ltc=$result->info->funds->borrow->ltc;
+                }
                 $userinfo->free_btc=$result->info->funds->free->btc;
                 $userinfo->free_cny=$result->info->funds->free->cny;
                 $userinfo->free_ltc=$result->info->funds->free->ltc;
@@ -435,12 +442,12 @@ class OKTOOL{
                 case 'btc_cny':
                     $my_last_price=$newset->btc_my_last_price;
                     $n_price=$newset->btc_n_price;
-                $smallprice=$last_price/99;
+                    $smallprice=$last_price/99;
                     break;
                 case 'ltc_cny':
                     $my_last_price=$newset->ltc_my_last_price;
                     $n_price=$newset->ltc_n_price;
-                $smallprice=$last_price/9;
+                    $smallprice=$last_price/9;
                     break;
                 default:
                     break;
@@ -498,17 +505,17 @@ class OKTOOL{
                         else
                         {
                             //卖出0.01btc比更新价格
-                        switch ($symbol) {
-                        case 'btc_cny':
-                            $amount=0.01;
-                            break;
-                        case 'ltc_cny':
-                            $amount=0.1;
-                            break;
-                        default:
-                            $amount=0.01;
-                            break;
-                        }
+                            switch ($symbol) {
+                            case 'btc_cny':
+                                $amount=0.01;
+                                break;
+                            case 'ltc_cny':
+                                $amount=0.1;
+                                break;
+                            default:
+                                $amount=0.01;
+                                break;
+                            }
                             $tradetype='sell_market';
                             $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
                             $this->send_sms('我在上涨，没有钱买了');
@@ -560,19 +567,19 @@ class OKTOOL{
             else
             {
                 //卖出所有的币止损
-                        switch ($symbol) {
-                        case 'btc_cny':
-                            $amount=$free_btc;
-                            $amountunit=0.01;
-                            break;
-                        case 'ltc_cny':
-                            $amount=$free_ltc;
-                            $amountunit=0.1;
-                            break;
-                        default:
-                            $amount=$free_btc;
-                            break;
-                        }
+                switch ($symbol) {
+                case 'btc_cny':
+                    $amount=$free_btc;
+                    $amountunit=0.01;
+                    break;
+                case 'ltc_cny':
+                    $amount=$free_ltc;
+                    $amountunit=0.1;
+                    break;
+                default:
+                    $amount=$free_btc;
+                    break;
+                }
                 $last_trade_type='down_1';
                 if ($amount>$amountunit) {
                     $last_trade_hits++;
