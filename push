@@ -6,11 +6,4 @@
 # Filename     : push.sh
 # Description  : 
 # *****************************************************
-git add .
-if [ $1 x = x ]
-then
-    git commit -m kaleo
-else
-    git commit -m $1
-fi
 git push
