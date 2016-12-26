@@ -12,13 +12,8 @@ return[
 'downline'=>6000,//初始化止损值
 'upline'=>100000,//止盈值
 'uprate'=>0.5,//上浮率
-<<<<<<< HEAD
-'downrate'=>0.75,//下浮动率
-'unit'=>0.5,//下单单位
-=======
 'downrate'=>0.5,//下浮动率
 'unit'=>0.2,//下单单位
->>>>>>> ebf429248158f5f7fca3863d52685dc1cd83410a
 'unitrate'=>0.5,//买入，卖出对价值波动的比率
 'klinetype'=>"5min",//kline的周期
 'smsusername'=>"kaleozhou",//短信用户名
