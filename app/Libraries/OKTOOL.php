@@ -174,7 +174,7 @@ class OKTOOL{
             //btc kline
             $symbol='btc_cny';
             $type=config('okcoin.klinetype');
-            $params = array('symbol' => $symbol, 'type' =>$type, 'size' => 100);
+            $params = array('symbol' => $symbol, 'type' =>$type, 'size' => 20);
             $result = $this->client->klineDataApi($params);
             foreach ($result as $reskline) {
                 //取出每个kline
@@ -191,7 +191,7 @@ class OKTOOL{
             }
             //ltc_cny kline
             $symbol='ltc_cny';
-            $params = array('symbol' => $symbol, 'type' =>$type, 'size' => 100);
+            $params = array('symbol' => $symbol, 'type' =>$type, 'size' => 20);
             $result = $this->client->klineDataApi($params);
             foreach ($result as $reskline) {
                 //取出每个kline
@@ -218,7 +218,7 @@ class OKTOOL{
                 $set->btc_my_last_price=$neworderinfo->avg_price;
             }
             //根据kline计算价值波数值20条信息
-            $btc_n_price=Kline::where('symbol',$symbol)->orderBy('id','desc')->take(100)->avg('dif_price');
+            $btc_n_price=Kline::where('symbol',$symbol)->orderBy('id','desc')->take(20)->avg('dif_price');
             $set->btc_n_price=$btc_n_price;
             //ltc设置
             $symbol='ltc_cny';
@@ -228,7 +228,7 @@ class OKTOOL{
                 $set->ltc_my_last_price=$neworderinfo->avg_price;
             }
             //根据kline计算价值波数值20条信息
-            $ltc_n_price=Kline::where('symbol',$symbol)->orderBy('id','desc')->take(100)->avg('dif_price');
+            $ltc_n_price=Kline::where('symbol',$symbol)->orderBy('id','desc')->take(20)->avg('dif_price');
             $set->ltc_n_price=$ltc_n_price;
             $set->user_id=$this->user_id;
             //暂为使用
