@@ -104,8 +104,8 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         <span class='col-xs-3 col-lg-2'>{{$set->ltc_n_price}}</span>
                         <span class='col-xs-3 col-lg-1'>差价:</span>
                         <span class='col-xs-3 col-lg-2'>{{round($ltc_ticker->last_price-$set->ltc_my_last_price,2)}}</span>
-                        <span class='col-xs-6 col-lg-2 text-warning'>上偏差:</span>
-                        <span class='col-xs-6 col-lg-1 text-warning'>{{$set->ltc_n_price*$set->uprate}}</span>
+                        <span class='col-xs-6 col-lg-2 text-success'>上偏差:</span>
+                        <span class='col-xs-6 col-lg-1 text-success'>{{$set->ltc_n_price*$set->uprate}}</span>
                         <span class='col-xs-3 col-lg-2 text-danger'>下偏差:</span>
                         <span class='col-xs-3 col-lg-1 text-danger '>{{$set->ltc_n_price*$set->downrate}}</span>
                     </div>
