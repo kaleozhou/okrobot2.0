@@ -16,3 +16,6 @@
     4. downrate 当当前价格低于上次成交价的时候，判断卖出信号（价格差与downrate*n_price比较）
     5. downline 止损值
     6. upline 止盈值
+####接下来要添加的功能
+    - 用户自己设置止损值
+    - 添加copyright标志
