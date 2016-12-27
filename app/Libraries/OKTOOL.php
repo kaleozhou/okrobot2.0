@@ -604,7 +604,7 @@ class OKTOOL{
                 //停止工作
                 $autoresult_order_id='upline';
                 $sms='已经止盈！';
-                if ($asset_net<=DOWNLINE) {
+                if ($asset_net<=$downline) {
                     $autoresult_order_id='downline';
                     $sms='已经止损！';
                 }
