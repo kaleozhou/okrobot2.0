@@ -683,22 +683,22 @@ class OKTOOL{
                     {
                         //买入一个单位的
                         if ($last_trade_type=='down') {
-                                //卖出所有的币止损
-                                switch ($symbol) {
-                                case 'btc_cny':
-                                    $amount=$free_btc;
-                                    $amountunit=0.01;
-                                    break;
-                                case 'ltc_cny':
-                                    $amount=$free_ltc;
-                                    $amountunit=0.1;
-                                    break;
-                                default:
-                                    $amount=$free_btc;
-                                    break;
-                                }
-                                $last_trade_type='down';
-                                $last_trade_hits++;
+                            //卖出所有的币止损
+                            switch ($symbol) {
+                            case 'btc_cny':
+                                $amount=$free_btc;
+                                $amountunit=0.01;
+                                break;
+                            case 'ltc_cny':
+                                $amount=$free_ltc;
+                                $amountunit=0.1;
+                                break;
+                            default:
+                                $amount=$free_btc;
+                                break;
+                            }
+                            $last_trade_type='down';
+                            $last_trade_hits++;
                             if ($last_trade_hits>=2) {
                             }
                             else
@@ -779,15 +779,42 @@ class OKTOOL{
                             break;
                         }
                         if ($last_trade_type=='up') {
-                            if ($last_trade_hits>=2) {
-                                $amount= $amountunit;   
-                            }
                             $last_trade_hits++;
+                            if ($last_trade_hits>=2) {
+                                //买入一个单位，小额建仓
+                                $price=$unit*$asset_total;
+                                $tradetype='buy_market';
+                                if ($price>$free_cny)
+                                {
+                                    $price=$free_cny;
+                                }
+                                if($price>=$smallprice&&$price<=$free_cny)
+                                {
+                                    $res=$this->totrade($symbol,$tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
+                                }
+                                else
+                                {
+                                    //卖出0.01btc比更新价格
+                                    switch ($symbol) {
+                                    case 'btc_cny':
+                                        $amount=0.01;
+                                        break;
+                                    case 'ltc_cny':
+                                        $amount=0.1;
+                                        break;
+                                    default:
+                                        $amount=0.01;
+                                        break;
+                                    }
+                                    $tradetype='sell_market';
+                                    $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
+                                    $this->send_sms('我在上涨，没有钱买了');
+                                }
+                            }
                         }
                         else
                         {
                             $last_trade_hits=1;
-                        }
                         $last_trade_type='up';
                         if ($amount>$amountunit) {
                             $tradetype='sell_market';
@@ -799,6 +826,7 @@ class OKTOOL{
                             $price=$smallprice;
                             $tradetype='buy_market';
                             $res=$this->totrade($symbol,$tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
+                        }
                         }
                     }
                 }
