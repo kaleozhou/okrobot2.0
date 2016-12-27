@@ -486,7 +486,7 @@ class OKTOOL{
                     if(abs($dif)>=$uprate*$n_price)
                     {
                         //买入一个单位的
-                        if ($last_trade_type='up') {
+                        if ($last_trade_type=='up') {
                             $last_trade_hits++;
                         }
                         else
@@ -545,7 +545,7 @@ class OKTOOL{
                             $amount=$free_btc;
                             break;
                         }
-                        if ($last_trade_type='down') {
+                        if ($last_trade_type=='down') {
                             $last_trade_hits++;
                         }
                         else
@@ -685,7 +685,7 @@ class OKTOOL{
                     if(abs($dif)>=$downrate*$n_price)
                     {
                         //买入一个单位的
-                        if ($last_trade_type='down') {
+                        if ($last_trade_type=='down') {
                             $last_trade_hits++;
                         }
                         else
@@ -749,7 +749,7 @@ class OKTOOL{
                             $amount=$free_btc;
                             break;
                         }
-                        if ($last_trade_type='up') {
+                        if ($last_trade_type=='up') {
                             $last_trade_hits++;
                         }
                         else
@@ -787,20 +787,17 @@ class OKTOOL{
                     $amount=$free_btc;
                     break;
                 }
-                $last_trade_type='down_1';
+                $last_trade_type='down';
                 $last_trade_hits=1;
                 if ($amount>$amountunit) {
-                    $last_trade_hits++;
                     $tradetype='sell_market';
                     $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
                 }
                 else
                 {
                     //卖完了
-                    //判断是否是连击
                     $price=$smallprice;
                     $tradetype='buy_market';
-                    $last_trade_hits++;
                     $res=$this->totrade($symbol,$tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
                 }
                 $this->login_user->btc_autotrade=false;
