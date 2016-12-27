@@ -486,13 +486,14 @@ class OKTOOL{
                     if(abs($dif)>=$uprate*$n_price)
                     {
                         //买入一个单位的
-                        if ($last_trade_type='up_1') {
+                        if ($last_trade_type='up') {
                             $last_trade_hits++;
                         }
                         else
                         {
                             $last_trade_hits=1;
                         }
+                            $last_trade_type='up';
                         $tradetype='buy_market';
                         //买入一个单位，小额建仓
                         $price=$unit*$asset_total;
@@ -544,14 +545,14 @@ class OKTOOL{
                             $amount=$free_btc;
                             break;
                         }
-                        if ($last_trade_type='down_1') {
+                        if ($last_trade_type='down') {
                             $last_trade_hits++;
                         }
                         else
                         {
                             $last_trade_hits=1;
                         }
-                        $last_trade_type='down_1';
+                        $last_trade_type='down';
                         if ($amount>$amountunit) {
                             $tradetype='sell_market';
                             $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
@@ -582,7 +583,7 @@ class OKTOOL{
                     $amount=$free_btc;
                     break;
                 }
-                $last_trade_type='down_1';
+                $last_trade_type='down';
                 $last_trade_hits=1;
                 if ($amount>$amountunit) {
                     $last_trade_hits++;
@@ -691,6 +692,7 @@ class OKTOOL{
                         {
                             $last_trade_hits=1;
                         }
+                        $last_trade_type='down';
                         //买入一个单位，小额建仓
                         $tradetype='buy_market';
                         $price=$unit*$asset_total;

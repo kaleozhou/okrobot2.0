@@ -27,10 +27,11 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->call(function()
         {
+            $tradetype=config('okcoin.tradetype');
             //自动交易btc
-            $this->autotrade('dotrade','btc_cny',2);
+            $this->autotrade('dotrade','btc_cny',$tradetype);
             //自动交易ltc
-            $this->autotrade('dotrade','ltc_cny',2);
+            $this->autotrade('dotrade','ltc_cny',$tradetype);
             //})->everyThirtyMinutes();
             // })->everyTenMinutes();
             //            })->everyFiveMinutes();
