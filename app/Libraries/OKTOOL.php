@@ -18,6 +18,7 @@ class OKTOOL{
     public $secret_key;
     public $client;
     public $user_id;
+    public $login_user;
     /**
      * @access 登陆用户 
      * @author kaleo <kaleo1990@hotmail.com>
@@ -32,6 +33,7 @@ class OKTOOL{
         $this->secret_key=$login_user->secret_key;
         $this->client=new OKCoin(new ApikeyAuthentication($this->api_key,$this->secret_key));
         $this->user_id=$login_user->id;
+        $this->login_user=$login_user;
     }
     /**
      * @access 获取api数据存入数据库 
@@ -596,9 +598,9 @@ class OKTOOL{
                     $last_trade_hits++;
                     $res=$this->totrade($symbol,$tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
                 }
-                $login_user->btc_autotrade=false;
-                $login_user->ltc_autotrade=false;
-                $login_user->save();
+                $this->login_user->btc_autotrade=false;
+                $this->login_user->ltc_autotrade=false;
+                $this->login_user->save();
                 //停止工作
                 $autoresult_order_id='upline';
                 $sms='已经止盈！';
