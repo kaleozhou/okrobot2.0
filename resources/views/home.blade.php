@@ -25,7 +25,7 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         @else
                         <div class='col-xs-4 col-lg-2'>
                             利润:
-                            <span class="label label-warning lead">{{round($profit,2)}}</span></div>
+                            <span class="label label-warning lead">{{round($profit,2)}}%</span></div>
                         @endif
                         <div class='col-xs-8 col-lg-4'>
                             更新:
