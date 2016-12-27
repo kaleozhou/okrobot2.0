@@ -683,7 +683,6 @@ class OKTOOL{
                     {
                         //买入一个单位的
                         if ($last_trade_type=='down') {
-                            if ($last_trade_hits>=2) {
                                 //卖出所有的币止损
                                 switch ($symbol) {
                                 case 'btc_cny':
@@ -700,6 +699,7 @@ class OKTOOL{
                                 }
                                 $last_trade_type='down';
                                 $last_trade_hits++;
+                            if ($last_trade_hits>=2) {
                             }
                             else
                             {
