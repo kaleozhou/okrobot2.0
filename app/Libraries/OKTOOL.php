@@ -596,6 +596,9 @@ class OKTOOL{
                     $last_trade_hits++;
                     $res=$this->totrade($symbol,$tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
                 }
+                $login_user->btc_autotrade=false;
+                $login_user->ltc_autotrade=false;
+                $login_user->save();
                 //停止工作
                 $autoresult_order_id='upline';
                 $sms='已经止盈！';
