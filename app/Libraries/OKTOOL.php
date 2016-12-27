@@ -617,5 +617,203 @@ class OKTOOL{
             return $e;
         }
     }
+    //自动下单策略2
+    public function autotrade2($symbol){
+        try{
+            //获取当前行情和基最新成交价价
+            $newticker=$this->get_new_info('ticker',$symbol);
+            if($newticker!=null){
+                $last_price=$newticker->last_price;
+                //最小购买金额计算
+            }
+            //获取趋势
+            $newtrend=$this->get_new_info('trend',$symbol);
+            $last_trade_type='';
+            $last_trade_hits=1;
+            if ($newtrend!=null) {
+                $last_trade_type=$newtrend->last_trade_type;
+                $last_trade_hits=$newtrend->last_trade_hits;
+            }
+            //获取设置
+            $newset=$this->get_new_info('set',$symbol);
+            if($newset!=null){
+
+                switch ($symbol) {
+                case 'btc_cny':
+                    $my_last_price=$newset->btc_my_last_price;
+                    $n_price=$newset->btc_n_price;
+                    $smallprice=$last_price/99;
+                    break;
+                case 'ltc_cny':
+                    $my_last_price=$newset->ltc_my_last_price;
+                    $n_price=$newset->ltc_n_price;
+                    $smallprice=$last_price/9;
+                    break;
+                default:
+                    break;
+                }
+                $unit=$newset->unit;
+                $uprate=$newset->uprate;
+                $downrate=$newset->downrate;
+                //设置止盈止损
+                $downline=$newset->downline;
+                $upline=$newset->upline;
+                $unitrate=$newset->unitrate;
+                $unit=$newset->unit;
+            }
+            //获取当前用户信息
+            $newuserinfo=$this->get_new_info('userinfo',$symbol);
+            if ($newuserinfo!=null) {
+                $free_cny=$newuserinfo->free_cny;
+                $free_btc=$newuserinfo->free_btc;
+                $free_ltc=$newuserinfo->free_ltc;
+                $asset_total=$newuserinfo->asset_total;
+                $asset_net=$newuserinfo->asset_net;
+            }
+            $autoresult_order_id="";
+            //判断接下来是买还是卖
+            $dif=$last_price-$my_last_price;
+            //创建趋势单
+            if ($asset_net>$downline&&$asset_net<$upline)
+            {
+                if ($dif<0)
+                {
+                    //价格在下降
+                    //判断是否达到触发值
+                    //如果当前价格$last_price低于$my_last_price价值波动一个$n_price,
+                    if(abs($dif)>=$downrate*$n_price)
+                    {
+                        //买入一个单位的
+                        if ($last_trade_type='down') {
+                            $last_trade_hits++;
+                        }
+                        else
+                        {
+                            $last_trade_hits=1;
+                        }
+                        //买入一个单位，小额建仓
+                        $tradetype='buy_market';
+                        $price=$unit*$asset_total;
+                        if ($price>$free_cny)
+                        {
+                            $price=$free_cny;
+                        }
+                        if($price>=$smallprice&&$price<=$free_cny)
+                        {
+                            $res=$this->totrade($symbol,$tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
+                        }
+                        else
+                        {
+                            //卖出0.01btc比更新价格
+                            switch ($symbol) {
+                            case 'btc_cny':
+                                $amount=0.01;
+                                break;
+                            case 'ltc_cny':
+                                $amount=0.1;
+                                break;
+                            default:
+                                $amount=0.01;
+                                break;
+                            }
+                            $tradetype='sell_market';
+                            $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
+                            $this->send_sms('我在上涨，没有钱买了');
+                        }
+                    }
+                }
+                else
+                {
+                    //价格在上升，卖单
+                    //判断是否达到出发值
+                    if(abs($dif)>=$uprate*$n_price)
+                    {
+                        //下卖单锁定利润
+                        switch ($symbol) {
+                        case 'btc_cny':
+                            $amount=$free_btc;
+                            $amountunit=0.01;
+                            break;
+                        case 'ltc_cny':
+                            $amount=$free_ltc;
+                            $amountunit=0.1;
+                            break;
+                        default:
+                            $amount=$free_btc;
+                            break;
+                        }
+                        if ($last_trade_type='up') {
+                            $last_trade_hits++;
+                        }
+                        else
+                        {
+                            $last_trade_hits=1;
+                        }
+                        $last_trade_type='up';
+                        if ($amount>$amountunit) {
+                            $tradetype='sell_market';
+                            $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
+                        }
+                        else
+                        {
+                            //卖完了
+                            $price=$smallprice;
+                            $tradetype='buy_market';
+                            $res=$this->totrade($symbol,$tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //卖出所有的币止损
+                switch ($symbol) {
+                case 'btc_cny':
+                    $amount=$free_btc;
+                    $amountunit=0.01;
+                    break;
+                case 'ltc_cny':
+                    $amount=$free_ltc;
+                    $amountunit=0.1;
+                    break;
+                default:
+                    $amount=$free_btc;
+                    break;
+                }
+                $last_trade_type='down_1';
+                $last_trade_hits=1;
+                if ($amount>$amountunit) {
+                    $last_trade_hits++;
+                    $tradetype='sell_market';
+                    $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
+                }
+                else
+                {
+                    //卖完了
+                    //判断是否是连击
+                    $price=$smallprice;
+                    $tradetype='buy_market';
+                    $last_trade_hits++;
+                    $res=$this->totrade($symbol,$tradetype,$price,$last_trade_type,$last_trade_hits,$asset_net);
+                }
+                $this->login_user->btc_autotrade=false;
+                $this->login_user->ltc_autotrade=false;
+                $this->login_user->save();
+                //停止工作
+                $autoresult_order_id='upline';
+                $sms='已经止盈！';
+                if ($asset_net<=$downline) {
+                    $autoresult_order_id='downline';
+                    $sms='已经止损！';
+                }
+                //发送通知
+                $this->send_sms($sms);
+            }
+        }
+        catch(Exception $e)
+        {
+            return $e;
+        }
+    }
 }
 ?>

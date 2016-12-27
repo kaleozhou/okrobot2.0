@@ -28,12 +28,12 @@ class Kernel extends ConsoleKernel
         $schedule->call(function()
         {
             //自动交易btc
-            $this->autotrade('dotrade','btc_cny');
+            $this->autotrade('dotrade','btc_cny',2);
             //自动交易ltc
-            $this->autotrade('dotrade','ltc_cny');
+            $this->autotrade('dotrade','ltc_cny',2);
             //})->everyThirtyMinutes();
             // })->everyTenMinutes();
-//            })->everyFiveMinutes();
+            //            })->everyFiveMinutes();
         })->everyMinute();
         //更更新数据
         $schedule->call(function()
@@ -42,7 +42,18 @@ class Kernel extends ConsoleKernel
             $this->autotrade('update','btc_cny');
         })->everyMinute();
     }
-    public function autotrade($operate,$symbol){
+    /**
+     * @access 
+     * @author kaleo <kaleo1990@hotmail.com>
+     * @param operate   update  更新数据
+     *                  totrade 自动交易  
+     * @param symbol    btc_cny 
+     *                  ltc_cny
+     * @param tradetype 1   策略一
+     *                  2   策略二
+     * @return
+     */
+    public function autotrade($operate,$symbol,$tradetype){
         switch ($operate) {
         case 'update':
             $users=User::all();
@@ -103,9 +114,21 @@ class Kernel extends ConsoleKernel
                         {
                             $OKTOOL=new OKTOOL($user);
                             $res=$OKTOOL->update_data_database();
-                            $res=$OKTOOL->autotrade($symbol);
+                            switch ($tradetype) {
+                            case 1:
+                                $res=$OKTOOL->autotrade($symbol);
+
+                                break;
+                            case 2:
+                                $res=$OKTOOL->autotrade2($symbol);
+                                break;
+
+                            default:
+                                $res=$OKTOOL->autotrade($symbol);
+                                break;
+                            }
                             $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
-                            Log::info($symbol.'-name: '.$user->name.' asset_net: '.$newuserinfo->asset_net.' asset_total: '.$newuserinfo->asset_total);
+                            Log::info('tradetype:'.$tradetype.'symbol'.$symbol.'-name: '.$user->name.' asset_net: '.$newuserinfo->asset_net.' asset_total: '.$newuserinfo->asset_total);
                         }
                         else
                         {
