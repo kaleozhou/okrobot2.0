@@ -60,7 +60,6 @@ class OKTOOL{
                 $userinfo->borrow_ltc=0;
                 if(!empty($result->info->funds->borrow))
                 {
-
                     $userinfo->borrow_btc=$result->info->funds->borrow->btc;
                     $userinfo->borrow_cny=$result->info->funds->borrow->cny;
                     $userinfo->borrow_ltc=$result->info->funds->borrow->ltc;
@@ -439,7 +438,6 @@ class OKTOOL{
             //获取设置
             $newset=$this->get_new_info('set',$symbol);
             if($newset!=null){
-
                 switch ($symbol) {
                 case 'btc_cny':
                     $my_last_price=$newset->btc_my_last_price;
@@ -638,7 +636,6 @@ class OKTOOL{
             //获取设置
             $newset=$this->get_new_info('set',$symbol);
             if($newset!=null){
-
                 switch ($symbol) {
                 case 'btc_cny':
                     $my_last_price=$newset->btc_my_last_price;
@@ -686,16 +683,22 @@ class OKTOOL{
                     {
                         //买入一个单位的
                         if ($last_trade_type=='down') {
+                            if ($last_trade_hits>=4) {
+                                $price=2*$unit*$asset_total;
+                            }
+                            else{
+                                $price=$smallprice;
+                            }
                             $last_trade_hits++;
                         }
                         else
                         {
+                            //买入一个单位，小额建仓
+                            $price=$unit*$asset_total;
                             $last_trade_hits=1;
                         }
-                        $last_trade_type='down';
-                        //买入一个单位，小额建仓
                         $tradetype='buy_market';
-                        $price=$unit*$asset_total;
+                        $last_trade_type='down';
                         if ($price>$free_cny)
                         {
                             $price=$free_cny;
