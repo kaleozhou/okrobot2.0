@@ -130,7 +130,7 @@ class Kernel extends ConsoleKernel
                                 break;
                             }
                             $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
-                            Log::info('tradetype:'.$tradetype.'-'.$symbol.'-: '.$user->name.'-cost'.$user->cost.' asset_net: '.$newuserinfo->asset_net.' asset_total: '.$newuserinfo->asset_total);
+                            Log::info('tradetype:'.$tradetype.'-'.$symbol.'-:'.$user->name.'-cost'.$user->cost.'-asset_net:'.$newuserinfo->asset_net.'-asset_total: '.$newuserinfo->asset_total);
                         }
                         else
                         {
