@@ -45,7 +45,7 @@ class HomeController extends Controller
         //计算利润
         if($login_user->cost>0&&!empty($newuserinfo))
         {
-            $profit=($newuserinfo->asset_net-$login_user->cost)*100/$login_user->cost;
+            $profit=($newuserinfo->asset_tol-$login_user->cost)*100/$login_user->cost;
         }
         else
         {
