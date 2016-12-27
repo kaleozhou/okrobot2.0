@@ -28,21 +28,27 @@ class Kernel extends ConsoleKernel
         $schedule->call(function()
         {
             $tradetype=config('okcoin.tradetype');
-            //自动交易btc
-            $this->autotrade('dotrade','btc_cny',$tradetype);
-            //自动交易ltc
-            $this->autotrade('dotrade','ltc_cny',$tradetype);
+            for ($i = 0; $i < 8; $i++) {
+                //自动交易btc
+                $this->autotrade('dotrade','btc_cny',$tradetype);
+                //自动交易ltc
+                $this->autotrade('dotrade','ltc_cny',$tradetype);
+                sleep(3);
+            }
             //})->everyThirtyMinutes();
             // })->everyTenMinutes();
             //            })->everyFiveMinutes();
         })->everyMinute();
         //更更新数据
-        $schedule->call(function()
-        {
-            //自动更新btc
-            $tradetype=config('okcoin.tradetype');
-            $this->autotrade('update','btc_cny',$tradetype);
-        })->everyMinute();
+//        $schedule->call(function()
+//        {
+//            $tradetype=config('okcoin.tradetype');
+//            for ($i = 0; $i < 8; $i++) {
+//                // code...
+//                $this->autotrade('update','btc_cny',$tradetype);
+//                sleep(3);
+//            }
+//        })->everyMinute();
     }
     /**
      * @access 
@@ -65,28 +71,25 @@ class Kernel extends ConsoleKernel
             }
             else
             {
-                for ($i = 0; $i < 8; $i++) {
-                    foreach ($users as $user) {
-                        try{
-                            if ($user->api_key!=null&&$user->secret_key!=null)
-                            {
-                                $OKTOOL=new OKTOOL($user);
-                                $res=$OKTOOL->update_data_database();
-                                $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
-                                //                                Log::info('name: '.$user->name.'已更新'.'cost'.$user->cost.'asset_net'.$newuserinfo->asset_net);
-                            }
-                            else
-                            {
-                                Log::info('name: '.$user->name.' 请设置你的api_key和secret_key!');
-                            }
+                foreach ($users as $user) {
+                    try{
+                        if ($user->api_key!=null&&$user->secret_key!=null)
+                        {
+                            $OKTOOL=new OKTOOL($user);
+                            $res=$OKTOOL->update_data_database();
+                            $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
+                            //                                Log::info('name: '.$user->name.'已更新'.'cost'.$user->cost.'asset_net'.$newuserinfo->asset_net);
                         }
-                        catch(exception $e){
-                            //修改设置
-                            $user->btc_autotrade=false;
-                            $user->ltc_autotrade=false;
-                            $user->save();
+                        else
+                        {
+                            Log::info('name: '.$user->name.' 请设置你的api_key和secret_key!');
                         }
-                        sleep(3);
+                    }
+                    catch(exception $e){
+                        //修改设置
+                        $user->btc_autotrade=false;
+                        $user->ltc_autotrade=false;
+                        $user->save();
                     }
                 }
             }
