@@ -734,6 +734,7 @@ class OKTOOL{
                         switch ($symbol) {
                         case 'btc_cny':
                             $amount=$free_btc;
+                            $amount=$asset_total*$unit/$last_price;
                             $amountunit=0.01;
                             break;
                         case 'ltc_cny':
