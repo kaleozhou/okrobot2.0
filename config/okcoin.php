@@ -10,9 +10,9 @@ return[
     //重要参数
     'downline'=>5500,//初始化止损值
     'upline'=>100000,//止盈值
-    'uprate'=>0.33,//上浮率
-    'downrate'=>0.33,//下浮动率
-    'unit'=>0.3,//下单单位
+    'uprate'=>0.4,//上浮率
+    'downrate'=>0.4,//下浮动率
+    'unit'=>0.33,//下单单位
     'klinetype'=>"3min",//kline的周期
     'tradetype'=>2,//使用策略类型，1，2
     //未使用参数
