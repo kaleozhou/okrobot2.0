@@ -14,7 +14,8 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <div class='row'>
-                        <label class="lead col-xs-4">控制面板</label>
+                        <label class="lead col-xs-5 col-lg-8">控制面板</label>
+                        <label class="lead col-xs-6 col-lg-4">正在运行策略{{config('okcoin.tradetype')}}</label>
                     </div>
                     <div class='row'>
                         @if ($profit>0)
@@ -138,6 +139,9 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                 </div>
             </div>
         </div>
+    </div>
+    <div class="text-center lead font-weight">
+        {{config('app.copyright')}}
     </div>
 </div>
 @endsection
