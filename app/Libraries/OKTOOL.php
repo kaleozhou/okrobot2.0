@@ -60,10 +60,10 @@ class OKTOOL{
                 $userinfo->borrow_ltc=0;
                 if(!empty($result->info->funds->borrow))
                 {
-                
-                $userinfo->borrow_btc=$result->info->funds->borrow->btc;
-                $userinfo->borrow_cny=$result->info->funds->borrow->cny;
-                $userinfo->borrow_ltc=$result->info->funds->borrow->ltc;
+
+                    $userinfo->borrow_btc=$result->info->funds->borrow->btc;
+                    $userinfo->borrow_cny=$result->info->funds->borrow->cny;
+                    $userinfo->borrow_ltc=$result->info->funds->borrow->ltc;
                 }
                 $userinfo->free_btc=$result->info->funds->free->btc;
                 $userinfo->free_cny=$result->info->funds->free->cny;
@@ -493,7 +493,7 @@ class OKTOOL{
                         {
                             $last_trade_hits=1;
                         }
-                            $last_trade_type='up';
+                        $last_trade_type='up';
                         $tradetype='buy_market';
                         //买入一个单位，小额建仓
                         $price=$unit*$asset_total;
@@ -730,15 +730,19 @@ class OKTOOL{
                     //判断是否达到出发值
                     if(abs($dif)>=$uprate*$n_price)
                     {
+                        $amount=$asset_total*$unit/$last_price;
                         //下卖单锁定利润
                         switch ($symbol) {
                         case 'btc_cny':
-                            $amount=$free_btc;
-                            $amount=$asset_total*$unit/$last_price;
+                            if ($amount>$free_btc) {
+                                $amount=$free_btc;
+                            }
                             $amountunit=0.01;
                             break;
                         case 'ltc_cny':
-                            $amount=$free_ltc;
+                            if ($amount>$free_ltc) {
+                                $amount=$free_ltc;
+                            }
                             $amountunit=0.1;
                             break;
                         default:
