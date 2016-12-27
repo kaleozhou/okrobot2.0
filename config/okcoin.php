@@ -9,7 +9,7 @@
 return[
 'api_key' => "7573fd61-7b8a-4132-814b-9536325c8460",
 'secret_key'=> "461D47D0FE52B28288E1285D8D899812",
-'downline'=>6000,//初始化止损值
+'downline'=>5500,//初始化止损值
 'upline'=>100000,//止盈值
 'uprate'=>0.5,//上浮率
 'downrate'=>0.5,//下浮动率
