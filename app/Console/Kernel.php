@@ -40,7 +40,8 @@ class Kernel extends ConsoleKernel
         $schedule->call(function()
         {
             //自动更新btc
-            $this->autotrade('update','btc_cny');
+            $tradetype=config('okcoin.tradetype');
+            $this->autotrade('update','btc_cny',$tradetype);
         })->everyMinute();
     }
     /**
