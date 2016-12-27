@@ -18,7 +18,7 @@ html, body {
 }
 
             .full-height {
-                height: 100vh;
+                height: 94vh;
             }
 
             .flex-center {
