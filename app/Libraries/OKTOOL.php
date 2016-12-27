@@ -683,13 +683,8 @@ class OKTOOL{
                     {
                         //买入一个单位的
                         if ($last_trade_type=='down') {
-                            if ($last_trade_hits>=4) {
-                                $price=2*$unit*$asset_total;
-                            }
-                            else{
                                 $price=$smallprice;
-                            }
-                            $last_trade_hits++;
+                                $last_trade_hits++;
                         }
                         else
                         {
