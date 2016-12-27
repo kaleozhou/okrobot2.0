@@ -18,4 +18,4 @@
     6. upline 止盈值
 ####接下来要添加的功能
     - 用户自己设置止损值
-    - 添加copyright标志
+    - 添加copyright标志 ©2016 OKROBOT

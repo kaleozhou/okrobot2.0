@@ -8,14 +8,14 @@
 
         <title>OKROBOT</title>
         <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Raleway', sans-serif;
-                font-weight: 100;
-                height: 100vh;
-                margin: 0;
-            }
+html, body {
+    background-color: #fff;
+    color: #636b6f;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 100;
+    height: 100vh;
+    margin: 0;
+}
 
             .full-height {
                 height: 100vh;
@@ -40,6 +40,9 @@
             .content {
                 text-align: center;
             }
+            .footer {
+                text-align: center;
+            }
 
             .title {
                 font-size: 50px;
@@ -60,18 +63,18 @@
             }
         </style>
     </head>
-                <script src="/js/app.js"></script>
+    <script src="/js/app.js"></script>
     <body>
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
-                <div class="top-right links">
-                    @if (Auth::check())
-                        <a href="{{ url('/home') }}">个人中心</a>
-                    @else
-                        <a href="{{ url('/login') }}">登录</a>
-                        <a href="{{ url('/register') }}">注册</a>
-                    @endif
-                </div>
+            <div class="top-right links">
+                @if (Auth::check())
+                <a href="{{ url('/home') }}">个人中心</a>
+                @else
+                <a href="{{ url('/login') }}">登录</a>
+                <a href="{{ url('/register') }}">注册</a>
+                @endif
+            </div>
             @endif
 
             <div class="content">
@@ -80,5 +83,8 @@
                 </div>
             </div>
         </div>
+            <div class='footer'>
+                {{config('app.copyright')}}
+            </div>
     </body>
 </html>
