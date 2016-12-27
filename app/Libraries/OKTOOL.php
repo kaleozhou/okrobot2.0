@@ -753,6 +753,9 @@ class OKTOOL{
                             break;
                         }
                         if ($last_trade_type=='up') {
+                            if ($last_trade_hits>=2) {
+                             $amount= $amountunit;   
+                            }
                             $last_trade_hits++;
                         }
                         else
