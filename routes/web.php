@@ -14,6 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/help', function () {
+    return view('help');
+});
 Auth::routes();
 Route::get('/home', 'HomeController@index');
 //停止自动交易
