@@ -150,6 +150,8 @@ class Kernel extends ConsoleKernel
             }
             else
             {
+                for ($i = 0; $i < 7; $i++) {
+                     // code...
                 foreach ($users as $user) {
                     try{
                         if ($user->api_key!=null&&$user->secret_key!=null)
@@ -181,6 +183,8 @@ class Kernel extends ConsoleKernel
                         $user->ltc_autotrade=false;
                         $user->save();
                     }
+                }
+                sleep(2);
                 }
             }
             break;
