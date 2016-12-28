@@ -20,11 +20,11 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                     <div class='row'>
                         @if ($profit>0)
                         <div class='col-xs-4 col-lg-2'>
-                            净资产:
+                            利润:
                             <span class="label label-success lead">{{round($profit,2)}}%</span></div>
                         @else
                         <div class='col-xs-4 col-lg-2'>
-                            净资产:
+                            利润:
                             <span class="label label-warning lead">{{round($profit,2)}}%</span></div>
                         @endif
                         <div class='col-xs-8 col-lg-4'>
@@ -67,48 +67,48 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                     <h4>账户信息</h4>
                     @if ($userinfo!=null)
                     <div class='row'>
-                        <span class='col-xs-3 col-lg-1'>余额:</span>
+                        <span class='col-xs-3 col-lg-2'>净资产:</span>
                         <span class='col-xs-3 col-lg-2 numeric'>{{$userinfo->asset_net}}</span>
-                        <span class='col-xs-3 col-lg-1'>总额:</span>
-                        <span class='col-xs-3 col-lg-2'>{{$userinfo->asset_total}}</span>
-                        <span class='col-xs-3 col-lg-1'>BTC:</span>
+                        <span class='col-xs-3 col-lg-2'>BTC:</span>
                         <span class='col-xs-3 col-lg-2'>{{$userinfo->free_btc}}</span>
-                        <span class='col-xs-3 col-lg-1'>LTC:</span>
+                        <span class='col-xs-3 col-lg-2'>LTC:</span>
                         <span class='col-xs-3 col-lg-2'>{{$userinfo->free_ltc}}</span>
-                        <span class='col-xs-6 col-lg-2 text-warning'>资金:</span>
-                        <span class='col-xs-6 col-lg-1 text-warning'>{{$userinfo->free_cny}}</span>
+                        <span class='col-xs-3 col-lg-2'>总额:</span>
+                        <span class='col-xs-3 col-lg-2'>{{$userinfo->asset_total}}</span>
+                        <span class='col-xs-6 col-lg-2 text-warning'>可用:</span>
+                        <span class='col-xs-6 col-lg-2 text-warning'>{{$userinfo->free_cny}}</span>
                     </div>
                     @endif
                     @if ($btc_ticker!=null&&$set!=null)
                     <div class='row'>
-                        <span class='col-xs-3 col-lg-1'>BTC:</span>
+                        <span class='col-xs-3 col-lg-2'>BTC:</span>
                         <span class='col-xs-3 col-lg-2'>{{$btc_ticker->last_price}}</span>
-                        <span class='col-xs-3 col-lg-1'>前价:</span>
+                        <span class='col-xs-3 col-lg-2'>前价:</span>
                         <span class='col-xs-3 col-lg-2'>{{$set->btc_my_last_price}}</span>
-                        <span class='col-xs-3 col-lg-1'>波动:</span>
+                        <span class='col-xs-3 col-lg-2'>波动:</span>
                         <span class='col-xs-3 col-lg-2'>{{$set->btc_n_price}}</span>
-                        <span class='col-xs-3 col-lg-1'>差价:</span>
+                        <span class='col-xs-3 col-lg-2'>差价:</span>
                         <span class='col-xs-3 col-lg-2'>{{round($btc_ticker->last_price-$set->btc_my_last_price,3)}}</span>
                         <span class='col-xs-3 col-lg-2 text-success'>上偏差:</span>
-                        <span class='col-xs-3 col-lg-1 text-success '>{{$set->btc_n_price*$set->uprate}}</span>
+                        <span class='col-xs-3 col-lg-2 text-success '>{{$set->btc_n_price*$set->uprate}}</span>
                         <span class='col-xs-3 col-lg-2 text-danger'>下偏差:</span>
-                        <span class='col-xs-3 col-lg-1 text-danger '>{{$set->btc_n_price*$set->downrate}}</span>
+                        <span class='col-xs-3 col-lg-2 text-danger '>{{$set->btc_n_price*$set->downrate}}</span>
                     </div>
                     @endif
                     @if ($ltc_ticker!=null&&$set!=null)
                     <div class='row'>
-                        <span class='col-xs-3 col-lg-1'>LTC:</span>
+                        <span class='col-xs-3 col-lg-2'>LTC:</span>
                         <span class='col-xs-3 col-lg-2'>{{$ltc_ticker->last_price}}</span>
-                        <span class='col-xs-3 col-lg-1'>前价:</span>
+                        <span class='col-xs-3 col-lg-2'>前价:</span>
                         <span class='col-xs-3 col-lg-2'>{{$set->ltc_my_last_price}}</span>
-                        <span class='col-xs-3 col-lg-1'>波动:</span>
+                        <span class='col-xs-3 col-lg-2'>波动:</span>
                         <span class='col-xs-3 col-lg-2'>{{$set->ltc_n_price}}</span>
-                        <span class='col-xs-3 col-lg-1'>差价:</span>
+                        <span class='col-xs-3 col-lg-2'>差价:</span>
                         <span class='col-xs-3 col-lg-2'>{{round($ltc_ticker->last_price-$set->ltc_my_last_price,2)}}</span>
                         <span class='col-xs-6 col-lg-2 text-success'>上偏差:</span>
-                        <span class='col-xs-6 col-lg-1 text-success'>{{$set->ltc_n_price*$set->uprate}}</span>
+                        <span class='col-xs-6 col-lg-2 text-success'>{{$set->ltc_n_price*$set->uprate}}</span>
                         <span class='col-xs-3 col-lg-2 text-danger'>下偏差:</span>
-                        <span class='col-xs-3 col-lg-1 text-danger '>{{$set->ltc_n_price*$set->downrate}}</span>
+                        <span class='col-xs-3 col-lg-2 text-danger '>{{$set->ltc_n_price*$set->downrate}}</span>
                     </div>
                     @endif
                     <h4>我的订单</h4>
