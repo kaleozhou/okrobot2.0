@@ -12,8 +12,8 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'OKRobot',
-    'copyright' => '©2016 OKRobot',
+    'name' => 'OKROBOT',
+    'copyright' => '©2016 OKROBOT',
 
     /*
     |--------------------------------------------------------------------------
