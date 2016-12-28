@@ -23,7 +23,7 @@ class UserController extends Controller
         $user->secret_key=$data['secret_key'];
         $user->cost=$data['cost'];
         $user->save(); 
-        return view('modifyUserinfo',['user'=>$user]);
+        return redirect('home');
     }
 
 
