@@ -15,7 +15,7 @@ return[
     'unit'=>0.2,//下单单位
     'klinetype'=>"5min",//kline的周期
     'tradetype'=>1,//使用策略类型，1，2
-    'interval'=>'1min',//使用自动扫描周期，1min，5min,10min,30min,1h
+    'interval'=>'5min',//使用自动扫描周期，1min，5min,10min,30min,1h
     //未使用参数
     'api_key' => "7573fd61-7b8a-4132-814b-9536325c8460",
     'secret_key'=> "461D47D0FE52B28288E1285D8D899812",
