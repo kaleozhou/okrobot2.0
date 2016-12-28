@@ -81,7 +81,7 @@ html, body {
 
             <div class="content">
                 <div  class="title m-b-md">
-                    OKROBOT
+                    <img class="img-responsive" src="images/logo.png"/>
                 </div>
             </div>
         </div>
