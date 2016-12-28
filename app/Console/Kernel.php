@@ -25,30 +25,69 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $interval=config('okcoin.interval');
+
+        switch ($interval) {
+        case '1min':
+            $schedule->call(function()
+            {
+                $tradetype=config('okcoin.tradetype');
+                $this->autotrade('dotrade','btc_cny',$tradetype);
+                $this->autotrade('dotrade','ltc_cny',$tradetype);
+            })->everyMinute();
+            break;
+        case '5min':
+            $schedule->call(function()
+            {
+                $tradetype=config('okcoin.tradetype');
+                $this->autotrade('dotrade','btc_cny',$tradetype);
+                $this->autotrade('dotrade','ltc_cny',$tradetype);
+            })->everyFiveMinutes();
+            break;
+        case '10min':
+            $schedule->call(function()
+            {
+                $tradetype=config('okcoin.tradetype');
+                $this->autotrade('dotrade','btc_cny',$tradetype);
+                $this->autotrade('dotrade','ltc_cny',$tradetype);
+            })->everyFiveMinutes();
+            break;
+        case '10min':
+            $schedule->call(function()
+            {
+                $tradetype=config('okcoin.tradetype');
+                $this->autotrade('dotrade','btc_cny',$tradetype);
+                $this->autotrade('dotrade','ltc_cny',$tradetype);
+            })->everyTenMinutes();
+            break;
+        case '30min':
+            $schedule->call(function()
+            {
+                $tradetype=config('okcoin.tradetype');
+                $this->autotrade('dotrade','btc_cny',$tradetype);
+                $this->autotrade('dotrade','ltc_cny',$tradetype);
+            })->everyThirtyMinutes();
+            break;
+        case '1h':
+            $schedule->call(function()
+            {
+                $tradetype=config('okcoin.tradetype');
+                $this->autotrade('dotrade','btc_cny',$tradetype);
+                $this->autotrade('dotrade','ltc_cny',$tradetype);
+            })->hourly();
+            break;
+        default:
+            break;
+        }
         $schedule->call(function()
         {
             $tradetype=config('okcoin.tradetype');
             for ($i = 0; $i < 8; $i++) {
-                //自动交易btc
-                $this->autotrade('dotrade','btc_cny',$tradetype);
-                //自动交易ltc
-                $this->autotrade('dotrade','ltc_cny',$tradetype);
+                // code...
+                $this->autotrade('update','btc_cny',$tradetype);
                 sleep(3);
             }
-            //})->everyThirtyMinutes();
-            // })->everyTenMinutes();
-            //            })->everyFiveMinutes();
         })->everyMinute();
-        //更更新数据
-//        $schedule->call(function()
-//        {
-//            $tradetype=config('okcoin.tradetype');
-//            for ($i = 0; $i < 8; $i++) {
-//                // code...
-//                $this->autotrade('update','btc_cny',$tradetype);
-//                sleep(3);
-//            }
-//        })->everyMinute();
     }
     /**
      * @access 

@@ -8,13 +8,14 @@
 # ******************************************************
 return[
     //重要参数
-    'downline'=>5000,//初始化止损值
+    'downline'=>4500,//初始化止损值
     'upline'=>100000,//止盈值
-    'uprate'=>0.4,//上浮率
-    'downrate'=>0.4,//下浮动率
+    'uprate'=>0.5,//上浮率
+    'downrate'=>0.5,//下浮动率
     'unit'=>0.2,//下单单位
-    'klinetype'=>"3min",//kline的周期
-    'tradetype'=>2,//使用策略类型，1，2
+    'klinetype'=>"5min",//kline的周期
+    'tradetype'=>1,//使用策略类型，1，2
+    'interval'=>'1min',//使用自动扫描周期，1min，5min,10min,30min,1h
     //未使用参数
     'api_key' => "7573fd61-7b8a-4132-814b-9536325c8460",
     'secret_key'=> "461D47D0FE52B28288E1285D8D899812",
