@@ -42,16 +42,17 @@ class HomeController extends Controller
             ->simplePaginate(5);
         $symbol='ltc_cny';
         $ltc_ticker=$OKTOOL->get_new_info('ticker',$symbol);
+        $cost=$login_user->cost;
         //计算利润
         if($login_user->cost>0&&!empty($newuserinfo))
         {
-            $profit=($newuserinfo->asset_total-$login_user->cost)*100/$login_user->cost;
+            $profit=($newuserinfo->asset_total-$cost)*100/$cost;
         }
         else
         {
             $profit=0;
         }
-        return view('home',['userinfo'=>$newuserinfo,'btc_ticker'=>$btc_ticker,'ltc_ticker'=>$ltc_ticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error,'profit'=>$profit]);
+        return view('home',['userinfo'=>$newuserinfo,'cost'=>$cost,'btc_ticker'=>$btc_ticker,'ltc_ticker'=>$ltc_ticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error,'profit'=>$profit]);
     }
     /**
      *设置开始自动交易

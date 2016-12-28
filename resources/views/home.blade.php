@@ -16,6 +16,12 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                     <div class='row'>
                         <label class="lead col-xs-5 col-lg-8">控制面板</label>
                         <label class="lead col-xs-6 col-lg-4">正在运行策略{{config('okcoin.tradetype')}}</label>
+                        @if ($cost>0)
+                        <label class="lead col-xs-6 col-lg-4">成本：{{$cost}}</label>
+                        @else
+                        <label class="col-xs-6 col-lg-4 label-danger">请设置成本</label>
+                        @endif
+
                     </div>
                     <div class='row'>
                         @if ($profit>0)
