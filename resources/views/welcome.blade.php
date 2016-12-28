@@ -70,9 +70,11 @@ html, body {
             <div class="top-right links">
                 @if (Auth::check())
                 <a href="{{ url('/home') }}">个人中心</a>
+                <a href="{{ url('/help') }}">帮助</a>
                 @else
                 <a href="{{ url('/login') }}">登录</a>
                 <a href="{{ url('/register') }}">注册</a>
+                <a href="{{ url('/help') }}">帮助</a>
                 @endif
             </div>
             @endif
