@@ -691,7 +691,10 @@ class OKTOOL{
                             }
                             $last_trade_hits++;
                         }
-                        $last_trade_hits=1;
+                        else
+                        {
+                            $last_trade_hits=1;
+                        }
                         $tradetype='buy_market';
                         $last_trade_type='down';
                         if ($price>$free_cny)
