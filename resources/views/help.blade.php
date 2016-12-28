@@ -8,6 +8,8 @@
                     <div class='row'>
                         <label class="lead col-xs-5 col-lg-8">帮助</label>
                     </div>
+                    <h1>注册</h1>
+                    </div>
             </div>
         </div>
     </div>
