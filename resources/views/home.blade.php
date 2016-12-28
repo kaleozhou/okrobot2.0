@@ -21,6 +21,11 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         @else
                         <label class="col-xs-6 col-lg-4 label-danger">请设置成本</label>
                         @endif
+                        @if (($userinfo->asset_total-$cost)>0)
+                        <label class="lead col-xs-6 col-lg-4 label-success">赚了：{{$userinfo->asset_total-$cost}}</label>
+                        @else
+                        <label class="lead col-xs-6 col-lg-4 label-warning">赚了：{{$userinfo->asset_total-$cost}}</label>
+                        @endif
                     </div>
                     @if ($userinfo!=null)
                     <div class='row'>
