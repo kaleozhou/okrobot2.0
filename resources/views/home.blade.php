@@ -20,11 +20,11 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                     <div class='row'>
                         @if ($profit>0)
                         <div class='col-xs-4 col-lg-2'>
-                            利润:
+                            净资产:
                             <span class="label label-success lead">{{round($profit,2)}}%</span></div>
                         @else
                         <div class='col-xs-4 col-lg-2'>
-                            利润:
+                            净资产:
                             <span class="label label-warning lead">{{round($profit,2)}}%</span></div>
                         @endif
                         <div class='col-xs-8 col-lg-4'>
