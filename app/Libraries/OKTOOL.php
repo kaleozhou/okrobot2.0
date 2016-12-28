@@ -474,7 +474,7 @@ class OKTOOL{
             //判断接下来是买还是卖
             $dif=$last_price-$my_last_price;
             //创建趋势单
-            if ($asset_net>$downline&&$asset_net<$upline)
+            if ($asset_total>$downline*$this->login_user->cost&&$asset_total<$upline*$this->login_user->cost)
             {
                 if ($dif>0)
                 {
@@ -670,7 +670,7 @@ class OKTOOL{
             //判断接下来是买还是卖
             $dif=$last_price-$my_last_price;
             //创建趋势单
-            if ($asset_net>$downline&&$asset_net<$upline)
+            if ($asset_total>$downline*$this->login_user->cost&&$asset_total<$upline*$this->login_user->cost)
             {
                 if ($dif<0)
                 {
