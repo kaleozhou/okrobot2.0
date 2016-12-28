@@ -21,8 +21,8 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         @else
                         <label class="col-xs-6 col-lg-4 label-danger">请设置成本</label>
                         @endif
-
                     </div>
+                    @if ($userinfo!=null)
                     <div class='row'>
                         @if ($profit>0)
                         <div class='col-xs-4 col-lg-2'>
@@ -37,7 +37,6 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                             更新:
                             <span>{{$userinfo->updated_at}}</span> 
                         </div>
-                        @if ($userinfo!=null)
                         @if ($user->btc_autotrade=='1')
                         <div class='col-xs-6 col-lg-3'>
                             BTC状态:<span class="label label-success ">BTC运行中</span></div>
@@ -52,7 +51,6 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         <div class='col-xs-6 col-lg-3'>
                             LTC状态:<span class="label label-danger ">LTC已停止</span></div>
                         @endif 
-                        @endif
                         <div class='col-xs-6 col-lg-6'>
                             <a class="btn btn-success btn-mini"href='/starttrade/btc_cny'>BTC开始</a>
                             <a class="btn btn-danger btn-mini"href='/stoptrade/btc_cny'>BTC停止</a> 
@@ -144,6 +142,9 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                     @endif
                 </div>
             </div>
+                @else
+                <h5><label class="label label-danger">你的apy_key设置不正确,请修改个人信息！</label></h5>
+                @endif
         </div>
     </div>
     <div class="text-center lead font-weight">

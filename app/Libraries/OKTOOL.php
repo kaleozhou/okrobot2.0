@@ -50,6 +50,7 @@ class OKTOOL{
             $params = array('api_key' => $this->api_key);
             $result = $this->client -> userinfoApi($params);
             //todatabase
+            if (!empty($result)) {
             if ($result->result) {
                 $userinfo=new Userinfo();
                 $userinfo->user_id=$this->user_id;
@@ -77,6 +78,7 @@ class OKTOOL{
             {
                 return $result->error_code;
             }
+            }
             return $res;
             break;
         case 'ticker':
@@ -85,6 +87,7 @@ class OKTOOL{
             $symbol='btc_cny';
             $params = array('symbol' => $symbol);
             $result = $this->client-> tickerApi($params);
+            if (!empty($result)) {
             $ticker=new Ticker();
             $ticker->buy=$result->ticker->buy;
             $ticker->high=$result->ticker->high;
@@ -107,6 +110,7 @@ class OKTOOL{
             $ticker->vol=$result->ticker->vol;
             $ticker->symbol=$symbol;
             $res=$ticker->save();
+            }
             break;
         case 'orderinfo':
             //批量获取用户订单
@@ -114,6 +118,7 @@ class OKTOOL{
             $symbol='btc_cny';
             $params = array('api_key' => $this->api_key, 'symbol' => $symbol, 'status' => 2, 'current_page' => '1', 'page_length' => '15');
             $result = $this->client-> orderHistoryApi($params);
+            if (!empty($result)) {
             if($result->result)
             {
                 $ordersresult=$result->orders;
@@ -169,6 +174,7 @@ class OKTOOL{
             {
                 return $result->error_code;
             }
+            }
             break;
         case 'kline':
             //获取比特币5分钟k线图数据20条
@@ -177,6 +183,7 @@ class OKTOOL{
             $type=config('okcoin.klinetype');
             $params = array('symbol' => $symbol, 'type' =>$type, 'size' => 20);
             $result = $this->client->klineDataApi($params);
+            if (!empty($result)) {
             foreach ($result as $reskline) {
                 //取出每个kline
                 $kline=Kline::firstOrNew(['create_date'=>date("Y/m/d H:i:s",substr($reskline[0],0,strlen($reskline[0])-3)),'symbol'=>$symbol]);
@@ -206,7 +213,7 @@ class OKTOOL{
                 $kline->dif_price=$kline['high_price']-$kline['low_price'];
                 $kline->symbol=$symbol;
                 $kline->save();
-            }
+            }}
             break;
         case 'set':
             //更新上次设置set，上次成交价my_last_price，成交单位unit，价值波动n_price
@@ -247,6 +254,7 @@ class OKTOOL{
             $symbol='btc_cny';
             $params = array('api_key' => $this->api_key, 'symbol' => $symbol);
             $result = $this->client-> borrowsInfoApi($params);
+            if (!empty($result)) {
             if($result->result)
             {
                 //todatabase
@@ -294,7 +302,7 @@ class OKTOOL{
             else
             {
                 return $result->error_code;
-            }
+            }}
             break;
         default:
             break;
