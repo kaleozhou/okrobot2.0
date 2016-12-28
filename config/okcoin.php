@@ -12,7 +12,7 @@ return[
     'upline'=>3,//止盈值
     'uprate'=>0.5,//上浮率
     'downrate'=>1,//下浮动率
-    'unit'=>0.2,//下单单位
+    'unit'=>0.33,//下单单位
     'klinetype'=>"1min",//kline的周期
     'tradetype'=>1,//使用策略类型，1，2
     'interval'=>'1min',//使用自动扫描周期，1min，5min,10min,30min,h
