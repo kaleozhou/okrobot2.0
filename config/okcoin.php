@@ -10,7 +10,7 @@ return[
     //重要参数
     'downline'=>0.9,//初始化止损值
     'upline'=>3,//止盈值
-    'uprate'=>1,//上浮率
+    'uprate'=>0.5,//上浮率
     'downrate'=>1,//下浮动率
     'unit'=>0.2,//下单单位
     'klinetype'=>"1min",//kline的周期
