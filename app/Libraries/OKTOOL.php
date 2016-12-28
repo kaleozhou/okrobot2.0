@@ -443,11 +443,13 @@ class OKTOOL{
                     $my_last_price=$newset->btc_my_last_price;
                     $n_price=$newset->btc_n_price;
                     $smallprice=$last_price/99;
+                    $smallamount=0.01;
                     break;
                 case 'ltc_cny':
                     $my_last_price=$newset->ltc_my_last_price;
                     $n_price=$newset->ltc_n_price;
                     $smallprice=$last_price/9;
+                    $smallamount=0.1;
                     break;
                 default:
                     break;
