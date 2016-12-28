@@ -533,11 +533,9 @@ class OKTOOL{
                         switch ($symbol) {
                         case 'btc_cny':
                             $amount=$free_btc;
-                            $amountunit=0.01;
                             break;
                         case 'ltc_cny':
                             $amount=$free_ltc;
-                            $amountunit=0.1;
                             break;
                         default:
                             $amount=$free_btc;
@@ -551,7 +549,7 @@ class OKTOOL{
                             $last_trade_hits=1;
                         }
                         $last_trade_type='down';
-                        if ($amount>$amountunit) {
+                        if ($amount>$smallamount) {
                             $tradetype='sell_market';
                             $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
                         }
@@ -571,11 +569,9 @@ class OKTOOL{
                 switch ($symbol) {
                 case 'btc_cny':
                     $amount=$free_btc;
-                    $amountunit=0.01;
                     break;
                 case 'ltc_cny':
                     $amount=$free_ltc;
-                    $amountunit=0.1;
                     break;
                 default:
                     $amount=$free_btc;
@@ -583,7 +579,7 @@ class OKTOOL{
                 }
                 $last_trade_type='down';
                 $last_trade_hits=1;
-                if ($amount>$amountunit) {
+                if ($amount>$smallamount) {
                     $last_trade_hits++;
                     $tradetype='sell_market';
                     $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
@@ -641,11 +637,13 @@ class OKTOOL{
                     $my_last_price=$newset->btc_my_last_price;
                     $n_price=$newset->btc_n_price;
                     $smallprice=$last_price/99;
+                    $smallamount=0.1;
                     break;
                 case 'ltc_cny':
                     $my_last_price=$newset->ltc_my_last_price;
                     $n_price=$newset->ltc_n_price;
                     $smallprice=$last_price/9;
+                    $smallamount=0.01;
                     break;
                 default:
                     break;
@@ -684,7 +682,13 @@ class OKTOOL{
                         //买入一个单位，小额建仓
                         $price=$unit*$asset_total;
                         if ($last_trade_type=='down') {
-                            //准备写入策略切换 
+                            if($last_trade_hits>=3)
+                            {
+                                //准备写入策略切换 
+                                config(['okcoin.uprate'=>1]);
+                                config(['okcoin.downrate'=>1]);
+                                config(['okcoin.tradetype'=>1]);
+                            }
                             $last_trade_hits++;
                         }
                         $last_trade_hits=1;
@@ -701,17 +705,7 @@ class OKTOOL{
                         else
                         {
                             //卖出0.01btc比更新价格
-                            switch ($symbol) {
-                            case 'btc_cny':
-                                $amount=0.01;
-                                break;
-                            case 'ltc_cny':
-                                $amount=0.1;
-                                break;
-                            default:
-                                $amount=0.01;
-                                break;
-                            }
+                                $amount=$smallamount;
                             $tradetype='sell_market';
                             $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
                             $this->send_sms('我在上涨，没有钱买了');
@@ -731,19 +725,25 @@ class OKTOOL{
                             if ($amount>$free_btc) {
                                 $amount=$free_btc;
                             }
-                            $amountunit=0.01;
                             break;
                         case 'ltc_cny':
                             if ($amount>$free_ltc) {
                                 $amount=$free_ltc;
                             }
-                            $amountunit=0.1;
                             break;
                         default:
                             $amount=$free_btc;
                             break;
                         }
                         if ($last_trade_type=='up') {
+                            
+                            if($last_trade_hits>=3)
+                            {
+                                //准备写入策略切换 
+                                config(['okcoin.uprate'=>1]);
+                                config(['okcoin.downrate'=>1]);
+                                config(['okcoin.tradetype'=>1]);
+                            }
                             $last_trade_hits++;
                         }
                         else
@@ -751,7 +751,7 @@ class OKTOOL{
                             $last_trade_hits=1;
                         }
                         $last_trade_type='up';
-                        if ($amount>$amountunit) {
+                        if ($amount>$smallamount) {
                             $tradetype='sell_market';
                             $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
                         }
@@ -771,11 +771,9 @@ class OKTOOL{
                 switch ($symbol) {
                 case 'btc_cny':
                     $amount=$free_btc;
-                    $amountunit=0.01;
                     break;
                 case 'ltc_cny':
                     $amount=$free_ltc;
-                    $amountunit=0.1;
                     break;
                 default:
                     $amount=$free_btc;
@@ -783,7 +781,7 @@ class OKTOOL{
                 }
                 $last_trade_type='down';
                 $last_trade_hits=1;
-                if ($amount>$amountunit) {
+                if ($amount>$smallamount) {
                     $tradetype='sell_market';
                     $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
                 }
