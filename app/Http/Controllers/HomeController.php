@@ -6,6 +6,7 @@ use App\Libraries\OKTOOL;
 use DB;
 use Log;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Notifications\InvoicePaid;
 class HomeController extends Controller
 {
@@ -52,7 +53,15 @@ class HomeController extends Controller
         {
             $profit=0;
         }
-        return view('home',['userinfo'=>$newuserinfo,'cost'=>$cost,'btc_ticker'=>$btc_ticker,'ltc_ticker'=>$ltc_ticker,'set'=>$newset,'orderinfos'=>$orderinfos,'user'=>$login_user,'error'=>$this->error,'profit'=>$profit]);
+        return view('home',[
+            'userinfo'=>$newuserinfo,
+            'btc_ticker'=>$btc_ticker,
+            'ltc_ticker'=>$ltc_ticker,
+            'set'=>$newset,
+            'orderinfos'=>$orderinfos,
+            'user'=>$login_user,
+            'error'=>$this->error,
+            'profit'=>$profit]);
     }
     /**
      *设置开始自动交易
@@ -110,5 +119,45 @@ class HomeController extends Controller
         $login_user->save();
         return redirect('home');
     }
+    public function refresh(Request $request){
+        $login_user=$request->user();
+        $OKTOOL=new OKTOOL($login_user);
+        $symbol='btc_cny';
+        $newuserinfo=$OKTOOL->get_new_info('userinfo',$symbol);
+        $btc_ticker=$OKTOOL->get_new_info('ticker',$symbol);
+        $newset=$OKTOOL->get_new_info('set',$symbol);
+        $orderinfos=Orderinfo::where('status','2')
+            ->where('user_id',$login_user->id)
+            ->orderBy('create_date','desc')
+            ->simplePaginate(5);
+        $symbol='ltc_cny';
+        $ltc_ticker=$OKTOOL->get_new_info('ticker',$symbol);
+        $cost=$login_user->cost;
+        //计算利润
+        if($login_user->cost>0&&!empty($newuserinfo))
+        {
+            $profit=($newuserinfo->asset_total-$cost)*100/$cost;
+        }
+        else
+        {
+            $profit=0;
+        }
+        if (true) {
+            return response()->json(array(
+                'status' => 1,
+                'msg' => 'ok',
+                'userinfo'=>$newuserinfo,
+                'btc_ticker'=>$btc_ticker,
+                'ltc_ticker'=>$ltc_ticker,
+                'set'=>$newset,
+                'orderinfos'=>$orderinfos,
+                'user'=>$login_user,
+                'error'=>$this->error,
+                'profit'=>$profit
+            ));
+        } else {
+            return Redirect::back()->withInput()->withErrors('保存失败！');
+        }
 
+    }
 }

@@ -29,3 +29,4 @@ Vue.component(
 'passport-personal-access-tokens',
 require('./components/passport/PersonalAccessTokens.vue')
 );
+

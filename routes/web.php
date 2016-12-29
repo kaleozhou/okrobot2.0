@@ -21,7 +21,9 @@ Route::get('/tubiao', function () {
     return view('tubiao');
 });
 Auth::routes();
+//主页
 Route::get('/home', 'HomeController@index');
+Route::get('/home/refresh', 'HomeController@refresh');
 //停止自动交易
 Route::get('/starttrade/btc_cny', 'HomeController@startbtc');
 Route::get('/starttrade/ltc_cny', 'HomeController@startltc');
