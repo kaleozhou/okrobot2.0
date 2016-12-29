@@ -16,6 +16,7 @@ function refresh(){
                 document.getElementById("free_ltc").innerText = data.userinfo.free_ltc;
                 document.getElementById("free_cny").innerText = data.userinfo.free_cny;
                 document.getElementById("zhuanle").innerText = round((data.userinfo.asset_total-data.user.cost),2);
+                document.getElementById("btc_last_price").innerText = data.btc_ticker.last_last_price;
             },
             error: function(xhr, type){
                 alert('Ajax error!')
