@@ -81,7 +81,7 @@ html, body {
 
             <div class="content">
                 <div  class="title m-b-md">
-                    <img class="img-responsive" src="images/logo.png"/>
+                    <img class="img-responsive" src="images/logo_300.png"/>
                 </div>
             </div>
         </div>

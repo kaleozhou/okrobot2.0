@@ -36,7 +36,7 @@ window.Laravel = <?php echo json_encode([
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+                        <img class="img-respiable" src='images/logo_50.png'/>
                     </a>
                 </div>
 
