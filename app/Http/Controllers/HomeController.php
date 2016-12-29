@@ -153,8 +153,8 @@ class HomeController extends Controller
                 'orderinfos'=>$orderinfos,
                 'user'=>$login_user,
                 'error'=>$this->error,
-                'profit'=>$profit
-            ));
+                'profit'=>round($profit,2
+            )));
         } else {
             return Redirect::back()->withInput()->withErrors('保存失败！');
         }
