@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f8ee64e7490a9ecf6a7e0b5c79f21ded",
-    "content-hash": "40c62b18c72f14ff928ec1c80754213e",
+    "hash": "580efbcdba359792be192da32bb19fd5",
+    "content-hash": "69ea10f01cb682be1cfba4502e5ffd88",
     "packages": [
         {
             "name": "caouecs/laravel-lang",
@@ -559,6 +559,46 @@
                 "tokenizer"
             ],
             "time": "2016-12-07 09:37:55"
+        },
+        {
+            "name": "jpgraph/jpgraph",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ztec/JpGraph.git",
+                "reference": "ad26df5941e847cf1255aecd2011ce16207304cf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://packagist.phpcomposer.com/files/ztec/JpGraph/ad26df5941e847cf1255aecd2011ce16207304cf.zip",
+                "reference": "ad26df5941e847cf1255aecd2011ce16207304cf",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "JpGraph": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "QPL 1.0"
+            ],
+            "authors": [
+                {
+                    "name": "JpGraph team"
+                }
+            ],
+            "description": "jpGraph, library to make graphs and charts",
+            "homepage": "http://jpgraph.net/",
+            "keywords": [
+                "chart",
+                "data",
+                "graph",
+                "jpgraph",
+                "pie"
+            ],
+            "time": "2013-05-23 14:04:00"
         },
         {
             "name": "laravel/framework",
@@ -4248,7 +4288,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "overtrue/laravel-lang": 20
+        "overtrue/laravel-lang": 20,
+        "jpgraph/jpgraph": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

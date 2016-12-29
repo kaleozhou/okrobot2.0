@@ -44,26 +44,26 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         </div>
                         @if ($user->btc_autotrade=='1')
                         <div class='col-xs-6 col-md-3'>
-                            BTC状态:<span class="label label-success ">BTC运行中</span></div>
+                            BTC状态:<span class="label label-success ">BTC运行中</span>
+                            <a class="btn btn-danger btn-mini"href='/stoptrade/btc_cny'>BTC停止</a> 
+                        </div>
                         @else
                         <div class='col-xs-6 col-md-3'>
-                            BTC状态:<span class="label label-danger ">BTC已停止</span></div>
+                            BTC状态:<span class="label label-danger ">BTC已停止</span>
+                            <a class="btn btn-success btn-mini"href='/starttrade/btc_cny'>BTC开始</a>
+                        </div>
                         @endif 
                         @if ($user->ltc_autotrade=='1')
                         <div class='col-xs-6 col-md-3'>
-                            LTC状态:<span class="label label-success ">LTC运行中</span></div>
-                        @else
-                        <div class='col-xs-6 col-md-3'>
-                            LTC状态:<span class="label label-danger ">LTC已停止</span></div>
-                        @endif 
-                        <div class='col-xs-6 col-md-6'>
-                            <a class="btn btn-success btn-mini"href='/starttrade/btc_cny'>BTC开始</a>
-                            <a class="btn btn-danger btn-mini"href='/stoptrade/btc_cny'>BTC停止</a> 
-                        </div>
-                        <div class='col-xs-6 col-md-6'>
-                            <a class="btn btn-success btn-mini"href='/starttrade/ltc_cny'>LTC开始</a>
+                            LTC状态:<span class="label label-success ">LTC运行中</span>
                             <a class="btn btn-danger btn-mini"href='/stoptrade/ltc_cny'>LTC停止</a> 
                         </div>
+                        @else
+                        <div class='col-xs-6 col-md-3'>
+                            LTC状态:<span class="label label-danger ">LTC已停止</span>
+                            <a class="btn btn-success btn-mini"href='/starttrade/ltc_cny'>LTC开始</a>
+                        </div>
+                        @endif 
                         @if ($error!=false)
                         <div class='col-xs-12'>
                             <label>
