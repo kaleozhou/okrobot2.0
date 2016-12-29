@@ -11,12 +11,12 @@ function refresh(){
             },
             success: function(data){
                 document.getElementById("asset_net").innerText = data.userinfo.asset_net;
-                document.getElementById("profit").innerText =data.profit+"%";
                 document.getElementById("free_btc").innerText = data.userinfo.free_btc;
                 document.getElementById("free_ltc").innerText = data.userinfo.free_ltc;
                 document.getElementById("free_cny").innerText = data.userinfo.free_cny;
                 document.getElementById("zhuanle").innerText = round((data.userinfo.asset_total-data.user.cost),2);
                 document.getElementById("btc_last_price").innerText = data.btc_ticker.last_last_price;
+                document.getElementById("profit").innerText =data.profit+"%";
             },
             error: function(xhr, type){
                 alert('Ajax error!')
