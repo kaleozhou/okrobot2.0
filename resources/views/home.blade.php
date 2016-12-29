@@ -88,7 +88,8 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         <span class='col-xs-6 col-lg-2 text-warning'>{{$userinfo->free_cny}}</span>
                     </div>
                     @endif
-                    @if ($btc_ticker!=null&&$set!=null)
+                    @if ($btc_ticker!=null&&$set!=null&&$user->btc_autotrade=='1')
+                    <h4>行情信息</h4>
                     <div class='row'>
                         <span class='col-xs-3 col-lg-2'>BTC:</span>
                         <span class='col-xs-3 col-lg-2'>{{$btc_ticker->last_price}}</span>
@@ -104,7 +105,8 @@ setTimeout('myrefresh()', 5000); //指定1秒刷新一次
                         <span class='col-xs-3 col-lg-2 text-danger '>{{$set->btc_n_price*$set->downrate}}</span>
                     </div>
                     @endif
-                    @if ($ltc_ticker!=null&&$set!=null)
+                    @if ($ltc_ticker!=null&&$set!=null&&$user->ltc_autotrade=='1')
+                    <h4>行情信息</h4>
                     <div class='row'>
                         <span class='col-xs-3 col-lg-2'>LTC:</span>
                         <span class='col-xs-3 col-lg-2'>{{$ltc_ticker->last_price}}</span>
