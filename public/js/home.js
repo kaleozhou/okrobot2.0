@@ -26,7 +26,7 @@ function refresh(){
                 document.getElementById("btc_n_price").innerText = data.set.btc_n_price;
                 document.getElementById("btc_dif").innerText = (data.btc_ticker.last_price-data.set.btc_my_last_price).toFixed(2);
                 document.getElementById("btc_up_dif").innerText = data.set.btc_n_price*data.set.uprate;
-                document.getElementById("btc_down_dif").innerText = data.set.btc_nprice*data.set.downrate;
+                document.getElementById("btc_down_dif").innerText = data.set.btc_n_price*data.set.downrate;
                 };
                 if (data.user.ltc_autotrade==1) {
                 //ltc_ticker
@@ -35,7 +35,7 @@ function refresh(){
                 document.getElementById("ltc_n_price").innerText = data.set.ltc_n_price;
                 document.getElementById("ltc_dif").innerText = (data.ltc_ticker.last_price-data.set.ltc_my_last_price).toFixed(2);
                 document.getElementById("ltc_up_dif").innerText = data.set.ltc_n_price*data.set.uprate;
-                document.getElementById("ltc_down_dif").innerText = data.set.ltc_nprice*data.set.downrate;
+                document.getElementById("ltc_down_dif").innerText = data.set.ltc_n_price*data.set.downrate;
                 };
             },
             error: function(xhr, type){
