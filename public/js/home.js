@@ -61,6 +61,33 @@ function refresh(){
                 document.getElementById("ltc_up_dif").innerText = data.set.ltc_n_price*data.set.uprate;
                 document.getElementById("ltc_down_dif").innerText = data.set.ltc_n_price*data.set.downrate;
             };
+            //刷新订单表
+                var ddtable=document.getElementById("ddtable");
+
+                //删除最近的最后一条
+                for (var i = 0; i < 5; i++) {
+                ddtable.deleteRow(1);
+                var newRow = ddtable.insertRow(); //创建新行
+                var newCell_avg_price = newRow.insertCell(); //创建新单元格
+                var newCell_deal_amount = newRow.insertCell(); 
+                var newCell_symbol = newRow.insertCell(); 
+                var newCell_ordertype = newRow.insertCell(); 
+                var newCell_create_date = newRow.insertCell(); 
+                newCell_avg_price.innerHTML = data.orderinfos.data[i].avg_price; 
+                newCell_deal_amount.innerHTML = data.orderinfos.data[i].deal_amount; 
+                newCell_symbol.innerHTML = data.orderinfos.data[i].symbol; 
+                var ordertype = data.orderinfos.data[i].ordertype; 
+                if (ordertype=='buy_market') {
+                newCell_ordertype.innerHTML = '买入'; 
+                }
+                else
+                {
+                newCell_ordertype.innerHTML = '卖出'; 
+                }
+                ;
+                newCell_create_date.innerHTML = data.orderinfos.data[i].create_date; 
+                };
+
         },
         error: function(xhr, type){
             //                alert('Ajax error!')

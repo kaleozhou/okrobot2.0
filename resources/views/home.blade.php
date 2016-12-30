@@ -115,7 +115,7 @@
                     </div>
                     @endif
                     <h4>我的订单</h4>
-                    <table class="table table-bordered table-container ">
+                    <table id="ddtable"class="table table-bordered table-container ">
                         <tr>
                             <td class='lead'>价格</td>
                             <td class='lead'>数量</td>
@@ -137,6 +137,7 @@
                             <td>{{$orderinfo->create_date}}</td>
                         </tr>
                         @endforeach
+                        </div>
                     </table>
                     @endif
                 </div>
