@@ -14,9 +14,9 @@
                         <label id='cost' class="col-xs-6 col-md-4 label-danger">请设置成本</label>
                         @endif
                         @if (($userinfo->asset_total-$user->cost)>0)
-                        <label id='zhuanle' class="lead col-xs-6 col-md-4 label-success">赚了：{{round(($userinfo->asset_total-$user->cost),2)}}</label>
+                        <label id='zhuanle' class="lead col-xs-6 col-md-4 label-success">盈利：{{round(($userinfo->asset_total-$user->cost),2)}}</label>
                         @else
-                        <label id='zhuanle' class="lead col-xs-6 col-md-4 label-warning">赚了：{{round(($userinfo->asset_total-$user->cost),2)}}</label>
+                        <label id='zhuanle' class="lead col-xs-6 col-md-4 label-warning">盈利：{{round(($userinfo->asset_total-$user->cost),2)}}</label>
                         @endif
                     </div>
                     @if ($userinfo!=null)
@@ -32,7 +32,7 @@
                         @endif
                         <div class='col-xs-8 col-md-4'>
                             更新:
-                            <span id='updateat'>{{$userinfo->updated_at}}</span> 
+                            <span id='updated_at'>{{$userinfo->updated_at}}</span> 
                         </div>
                         @if ($user->btc_autotrade=='1')
                         <div class='col-xs-6 col-md-3'>
