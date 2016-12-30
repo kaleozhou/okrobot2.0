@@ -11,7 +11,7 @@ return[
     'downline'=>0.9,//初始化止损值
     'upline'=>3,//止盈值
     'uprate'=>0.5,//上浮率
-    'downrate'=>0.5,//下浮动率
+    'downrate'=>1,//下浮动率
     'unit'=>0.33,//下单单位
     'klinetype'=>"15min",//kline的周期
     'tradetype'=>1,//使用策略类型，1，2
