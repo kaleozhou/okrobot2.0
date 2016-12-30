@@ -9,7 +9,7 @@
 git add .
 if [ $1 x = x ]
 then
-    git commit -m kaleo
+    git commit -m kaleo-localhost
 else
     git commit -m $1
 fi
