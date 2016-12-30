@@ -22,11 +22,10 @@ window.Laravel = <?php echo json_encode([
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-primary navbar-static-top">
+        <nav class="navbar navbar-primary navbar-static-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">
 
-                    <!-- Collapsed Hamburger -->
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
                         <span class="sr-only">Toggle Navigation</span>
                         <span class="icon-bar"></span>
@@ -66,7 +65,7 @@ window.Laravel = <?php echo json_encode([
                                     <li>
                                         <a href="{{url('/modifyUserinfo')}}">修改信息</a>
                                     </li>
-                            <li><a href="{{ url('/help') }}">帮助</a></li>
+                                    <li><a href="{{ url('/help') }}">帮助</a></li>
                                     <li>
                                         <a href="{{ url('/logout') }}"
                                             onclick="event.preventDefault();
