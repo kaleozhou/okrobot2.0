@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# ******************************************************
+# Author       : kaleo
+# Last modified: 2016-12-31 13:51
+# Email        : kaleo1990@hotmail.com
+# Filename     : updateconfig
+# Description  : 
+# ******************************************************
+echo "update homestead.sysconfigs set value='$2' where name='$1';"|mysql -h$3 -uhomestead -psecret
+echo "select * from homestead.sysconfigs ;"|mysql -h$3 -uhomestead -psecret

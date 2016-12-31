@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             ['name'=>'uprate','value'=>1],//上浮率
             ['name'=>'downrate','value'=>1],//下浮动率
             ['name'=>'unit','value'=>0.1],//下单单位
-            ['name'=>'klinetype','value'=>"1min"],//kline的周期
+            ['name'=>'klinetype','value'=>"15min"],//kline的周期
             ['name'=>'tradetype','value'=>1],//使用策略类型，1，2
             ['name'=>'api_key' ,'value'=> "7573fd61-7b8a-4132-814b-9536325c8460"],
             ['name'=>'secret_key','value'=> "461D47D0FE52B28288E1285D8D899812"],
