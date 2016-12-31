@@ -6,9 +6,16 @@
 # Filename     : updateconfig
 # Description  : 
 # ******************************************************
-if [[ $3x=x ]]; then
-echo "update homestead.sysconfigs set value='$2' where name='$1';"|mysql -h127.0.0.1 -uhomestead -psecret
+if [ x$3 = x ]
+then
+host=127.0.0.1
 else
-echo "update homestead.sysconfigs set value='$2' where name='$1';"|mysql -h$3 -uhomestead -psecret
+host=$3
 fi
-echo "select * from homestead.sysconfigs ;"|mysql -h$3 -uhomestead -psecret
+if [ x$1 = x ]
+then
+echo 'please input name value h'
+else
+echo "update homestead.sysconfigs set value='$2' where name='$1';"|mysql -h$host -uhomestead -psecret
+fi
+echo "select * from homestead.sysconfigs ;"|mysql -h$host -uhomestead -psecret
