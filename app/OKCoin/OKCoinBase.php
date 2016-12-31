@@ -12,7 +12,7 @@ if (!function_exists('curl_init')) {
 class OKCoinBase {
 	const API_BASE = '/api/v1/';
 	
-	//const WEB_BASE = 'https://www.okcoin.com/';//OKCoin国际站
+//const WEB_BASE = 'https://www.okcoin.com/';//OKCoin国际站
 
     const WEB_BASE = 'https://www.okcoin.cn/';//OKCoin中国站
 	
