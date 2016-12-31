@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# ******************************************************
+# Author       : kaleo
+# Last modified: 2016-12-31 13:34
+# Email        : kaleo1990@hotmail.com
+# Filename     : tomysql
+# Description  : 
+# ******************************************************
+mysql homestead -uhomestead -psecret
