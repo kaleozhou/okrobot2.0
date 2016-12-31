@@ -19,7 +19,6 @@ class CreateSetsTable extends Migration
             $table->decimal('btc_my_last_price',15,4)->nullable()->default(0);
             $table->decimal('ltc_my_last_price',15,4)->nullable()->default(0);
             $table->decimal('unit',15,4);
-            $table->decimal('unitrate',15,4);
             $table->decimal('btc_n_price',15,4)->nullable()->default(0);
             $table->decimal('ltc_n_price',15,4)->nullable()->default(0);
             $table->decimal('uprate',15,4);

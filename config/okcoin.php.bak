@@ -19,7 +19,6 @@ return[
     //未使用参数
     'api_key' => "7573fd61-7b8a-4132-814b-9536325c8460",
     'secret_key'=> "461D47D0FE52B28288E1285D8D899812",
-    'unitrate'=>0.5,//买入，卖出对价值波动的比率
     'smsusername'=>"kaleozhou",//短信用户名
     'smspassword'=>"zh13275747670",//短信密码
     'smsphone'=>"13635456575"//短信手机号

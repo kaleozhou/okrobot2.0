@@ -8,6 +8,7 @@
                     <div class='row'>
                         <label class="lead col-xs-5 col-md-8">控制面板</label>
                         <label class="lead col-xs-6 col-md-4">正在运行策略{{config('okcoin.tradetype')}}</label>
+                    @if ($userinfo!=null)
                         @if ($user->cost>0)
                         <label id='cost' class="lead col-xs-6 col-md-4">成本：{{$user->cost}}</label>
                         @else
@@ -17,6 +18,7 @@
                         <label id='zhuanle' class="lead col-xs-6 col-md-4 label-success">盈利：{{round(($userinfo->asset_total-$user->cost),2)}}</label>
                         @else
                         <label id='zhuanle' class="lead col-xs-6 col-md-4 label-warning">盈利：{{round(($userinfo->asset_total-$user->cost),2)}}</label>
+                        @endif
                         @endif
                     </div>
                     @if ($userinfo!=null)

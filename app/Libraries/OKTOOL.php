@@ -7,6 +7,7 @@ use App\Models\Set;
 use App\Models\Trend;
 use App\Models\Trade;
 use App\Models\Sms;
+use App\Models\Sysconfig;
 use App\Models\Kline;
 use App\Models\Borrow;
 use App\OKCoin\OKCoin;
@@ -180,7 +181,7 @@ class OKTOOL{
             //获取比特币5分钟k线图数据20条
             //btc kline
             $symbol='btc_cny';
-            $type=config('okcoin.klinetype');
+            $type=Sysconfig::where('name','klinetype')->first()->value;
             $params = array('symbol' => $symbol, 'type' =>$type, 'size' => 20);
             $result = $this->client->klineDataApi($params);
             if (!empty($result)) {
@@ -240,12 +241,11 @@ class OKTOOL{
             $set->ltc_n_price=$ltc_n_price;
             $set->user_id=$this->user_id;
             //暂为使用
-            $set->uprate=config('okcoin.uprate');
-            $set->unit=config('okcoin.unit');
-            $set->unitrate=config('okcoin.unitrate');
-            $set->upline=config('okcoin.upline');
-            $set->downline=config('okcoin.downline');
-            $set->downrate=config('okcoin.downrate');
+            $set->uprate=Sysconfig::where('name','uprate')->first()->value;
+            $set->unit=Sysconfig::where('name','unit')->first()->value;
+            $set->upline=Sysconfig::where('name','upline')->first()->value;
+            $set->downline=Sysconfig::where('name','downline')->first()->value;
+            $set->downrate=Sysconfig::where('name','downrate')->first()->value;
             $set->save();
             break;
         case 'borrow':
@@ -366,9 +366,9 @@ class OKTOOL{
     //发送通知短信
     public function send_sms($content){
         $newsms=new Sms();
-        $username=config('okcoin.smsusername');
-        $password=md5(config('okcion.smspassword'));
-        $phone=config('okcoin.smsphone');
+        $username=Sysconfig::where('name','smsusername')->first()->value;
+        $password=md5(Sysconfig::where('name','smspassword')->first()->value);
+        $phone=Sysconfig::where('name','smsphone')->first()->value;
         $sms_type='短信宝';
         $url="http://api.smsbao.com/sms?u=$username&p=$password&m=$phone&c=$content";
         //初始化
@@ -529,7 +529,6 @@ class OKTOOL{
                             }
                             $tradetype='sell_market';
                             $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
-                            $this->send_sms('我在上涨，没有钱买了');
                         }
                     }
                 }
@@ -614,7 +613,6 @@ class OKTOOL{
                     $sms='已经止损！';
                 }
                 //发送通知
-                $this->send_sms($sms);
             }
         }
         catch(Exception $e)
@@ -695,9 +693,6 @@ class OKTOOL{
                             if($last_trade_hits>=3)
                             {
                                 //准备写入策略切换 
-                                config(['okcoin.uprate'=>1]);
-                                config(['okcoin.downrate'=>1]);
-                                config(['okcoin.tradetype'=>1]);
                             }
                             $last_trade_hits++;
                         }
@@ -721,7 +716,6 @@ class OKTOOL{
                                 $amount=$smallamount;
                             $tradetype='sell_market';
                             $res=$this->totrade($symbol,$tradetype,$amount,$last_trade_type,$last_trade_hits,$asset_net);
-                            $this->send_sms('我在上涨，没有钱买了');
                         }
                     }
                 }
@@ -753,9 +747,6 @@ class OKTOOL{
                             if($last_trade_hits>=3)
                             {
                                 //准备写入策略切换 
-                                config(['okcoin.uprate'=>1]);
-                                config(['okcoin.downrate'=>1]);
-                                config(['okcoin.tradetype'=>1]);
                             }
                             $last_trade_hits++;
                         }
@@ -816,7 +807,6 @@ class OKTOOL{
                     $sms='已经止损！';
                 }
                 //发送通知
-                $this->send_sms($sms);
             }
         }
         catch(Exception $e)

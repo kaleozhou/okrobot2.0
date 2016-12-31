@@ -4,6 +4,7 @@ use Log;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\User;
+use App\Models\Sysconfig;
 use App\Libraries\OKTOOL;
 class Kernel extends ConsoleKernel
 {
@@ -23,15 +24,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
-        $interval=config('okcoin.interval');
+        $interval=Sysconfig::where('name','interval')->first()->value;
+        $tradetype=Sysconfig::where('name','tradetype')->first()->value;
 
         switch ($interval) {
         case '1min':
             $schedule->call(function()
             {
-                $tradetype=config('okcoin.tradetype');
+                $tradetype=Sysconfig::where('name','tradetype')->first()->value;
                 $this->autotrade('dotrade','btc_cny',$tradetype);
                 $this->autotrade('dotrade','ltc_cny',$tradetype);
             })->everyMinute();
@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
         case '5min':
             $schedule->call(function()
             {
-                $tradetype=config('okcoin.tradetype');
+                $tradetype=Sysconfig::where('name','tradetype')->first()->value;
                 $this->autotrade('dotrade','btc_cny',$tradetype);
                 $this->autotrade('dotrade','ltc_cny',$tradetype);
             })->everyFiveMinutes();
@@ -47,7 +47,7 @@ class Kernel extends ConsoleKernel
         case '10min':
             $schedule->call(function()
             {
-                $tradetype=config('okcoin.tradetype');
+                $tradetype=Sysconfig::where('name','tradetype')->first()->value;
                 $this->autotrade('dotrade','btc_cny',$tradetype);
                 $this->autotrade('dotrade','ltc_cny',$tradetype);
             })->everyFiveMinutes();
@@ -55,7 +55,7 @@ class Kernel extends ConsoleKernel
         case '10min':
             $schedule->call(function()
             {
-                $tradetype=config('okcoin.tradetype');
+                $tradetype=Sysconfig::where('name','tradetype')->first()->value;
                 $this->autotrade('dotrade','btc_cny',$tradetype);
                 $this->autotrade('dotrade','ltc_cny',$tradetype);
             })->everyTenMinutes();
@@ -63,7 +63,7 @@ class Kernel extends ConsoleKernel
         case '30min':
             $schedule->call(function()
             {
-                $tradetype=config('okcoin.tradetype');
+                $tradetype=Sysconfig::where('name','tradetype')->first()->value;
                 $this->autotrade('dotrade','btc_cny',$tradetype);
                 $this->autotrade('dotrade','ltc_cny',$tradetype);
             })->everyThirtyMinutes();
@@ -71,7 +71,7 @@ class Kernel extends ConsoleKernel
         case '1h':
             $schedule->call(function()
             {
-                $tradetype=config('okcoin.tradetype');
+                $tradetype=Sysconfig::where('name','tradetype')->first()->value;
                 $this->autotrade('dotrade','btc_cny',$tradetype);
                 $this->autotrade('dotrade','ltc_cny',$tradetype);
             })->hourly();
@@ -81,7 +81,7 @@ class Kernel extends ConsoleKernel
         }
         $schedule->call(function()
         {
-            $tradetype=config('okcoin.tradetype');
+                $tradetype=Sysconfig::where('name','tradetype')->first()->value;
             for ($i = 0; $i < 8; $i++) {
                 // code...
                 $this->autotrade('update','btc_cny',$tradetype);
