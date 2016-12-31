@@ -48,14 +48,6 @@ class Kernel extends ConsoleKernel
                 $tradetype=Sysconfig::where('name','tradetype')->first()->value;
                 $this->autotrade('dotrade','btc_cny',$tradetype);
                 $this->autotrade('dotrade','ltc_cny',$tradetype);
-            })->everyFiveMinutes();
-            break;
-        case '10min':
-            $schedule->call(function()
-            {
-                $tradetype=Sysconfig::where('name','tradetype')->first()->value;
-                $this->autotrade('dotrade','btc_cny',$tradetype);
-                $this->autotrade('dotrade','ltc_cny',$tradetype);
             })->everyTenMinutes();
             break;
         case '30min':
