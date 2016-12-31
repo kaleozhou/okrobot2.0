@@ -24,9 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $interval=Sysconfig::where('name','interval')->first()->value;
-        $tradetype=Sysconfig::where('name','tradetype')->first()->value;
-
+        $interval=config('okcoin.interval');
         switch ($interval) {
         case '1min':
             $schedule->call(function()
