@@ -7,6 +7,6 @@
 # description  : 
 # ******************************************************
 return[
-    'interval'=>'5min',//使用自动扫描周期，1min，5min,10min,30min,h
+    'interval'=>'10min',//使用自动扫描周期，1min，5min,10min,30min,h
 ];
 
